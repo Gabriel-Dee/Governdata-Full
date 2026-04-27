@@ -1,0 +1,525 @@
+GovernData Platform
+Experimental Evaluation Document
+Healthcare Compliance Governance · Policy Enforcement & Audit Integrity
+
+Overview & Experimental Context
+The experimental evaluation of the GovernData platform is designed to assess how different governance strategies impact the enforcement and auditability of healthcare compliance policies such as those derived from HIPAA and GDPR. Rather than treating governance as a single mechanism, this study evaluates it across two key dimensions: policy enforcement and audit integrity.
+The experiments aim to determine how effectively different policy engines — a custom JSON-based policy model and a policy-as-code approach using Open Policy Agent (OPA) — can enforce access control decisions, and how different audit storage mechanisms (centralized database versus blockchain-based logging) affect the reliability and trustworthiness of compliance evidence.
+To achieve this, a controlled experimental environment was developed using a simulated EHR system integrated with the governance platform. Identical access scenarios — both authorized and unauthorized — are executed across different configurations of the system. These configurations vary in terms of the policy enforcement mechanism used and the audit storage strategy applied. Additionally, adversarial scenarios such as log tampering are introduced to evaluate the system's ability to detect and preserve evidence of unauthorized modifications.
+
+Experimental Setup
+System Configuration
+Component
+Details
+Platform
+GovernData — Healthcare Compliance Governance System
+Dataset
+Kaggle Synthetic EHR Dataset (simulated patient & access records)
+Policy Engines
+(1) Custom JSON-based policy model  |  (2) Open Policy Agent (OPA)
+Audit Storage
+(1) Centralized Database  |  (2) Blockchain  |  (3) Hybrid (DB + Blockchain)
+Test Interface
+Frontend UI / Postman — repeated /authorize endpoint requests
+Runs Per Scenario
+5–10 runs per scenario; average values recorded
+Timing Method
+System.currentTimeMillis() — before and after each request
+
+Experiment Summary
+#
+Experiment
+Focus
+Key Metric
+1
+Policy Engine Comparison
+JSON vs OPA decision correctness & speed
+Decision accuracy, latency (ms)
+2
+DB vs Blockchain Audit Integrity
+Tamper detection in different log stores
+Tamper detectability, evidence availability
+3
+Hybrid Audit (DB + Blockchain)
+Best-of-both audit storage model
+Record match rate, verification strength
+4
+Policy Versioning Traceability
+Can you trace which policy version was used?
+Version traceability, decision consistency
+5
+Unauthorized Access Handling
+Valid vs invalid access scenario enforcement
+Allow/Deny accuracy, consistency
+6
+Latency Overhead
+Performance across all configurations
+Average response time (ms)
+
+
+EXPERIMENT 1  —  Policy Engine Comparison
+
+Objective
+Evaluate whether the JSON-based policy engine and OPA policy engine produce consistent access control decisions, and compare their latency and expressiveness when handling the same access request.
+Scenario Description
+Trigger
+Same access request evaluated simultaneously by both policy engines
+
+Subject
+Doctor attempting to access a patient EHR record
+
+Request Types
+Valid treatment access  |  Invalid research access  |  Edge-case role combinations
+
+What to Measure
+Metric
+Description
+Decision Correctness
+Do both engines produce the same Allow/Deny decision for identical inputs?
+Latency (ms)
+Time from request submission to decision response for each engine
+Policy Expressiveness
+Qualitative assessment: how easily can complex rules be expressed in each engine?
+
+Expected Results
+Both engines should produce identical decisions for the same input. OPA is expected to offer greater flexibility for complex policy rules, while the JSON engine may demonstrate lower latency due to its simpler evaluation model.
+
+Results Table
+Engine
+Scenario
+Decision
+Avg Time (ms)
+Notes
+JSON Engine
+Treatment Access (Valid)
+Allow / Deny
+—
+
+
+Research Access (Invalid)
+Allow / Deny
+—
+
+
+Edge Case
+Allow / Deny
+—
+
+OPA Engine
+Treatment Access (Valid)
+Allow / Deny
+—
+
+
+Research Access (Invalid)
+Allow / Deny
+—
+
+
+Edge Case
+Allow / Deny
+—
+
+
+Qualitative Comparison
+Criterion
+JSON Engine
+OPA Engine
+Ease of policy expression
+Rate 1–5
+Rate 1–5
+Rule complexity support
+Rate 1–5
+Rate 1–5
+Human readability
+Rate 1–5
+Rate 1–5
+Integration effort
+Rate 1–5
+Rate 1–5
+
+
+EXPERIMENT 2  —  DB vs Blockchain Audit Integrity
+
+Objective
+Determine whether blockchain-based audit logging provides stronger tamper-evidence guarantees than a traditional centralized database when access control logs are maliciously modified or deleted.
+Scenario Description
+Step 1
+Perform a series of access requests (Allow and Deny decisions)
+
+Step 2
+Store audit logs in: (a) Database only  |  (b) Blockchain only
+
+Attack
+Manually modify a DB log entry  |  Manually delete a DB log entry
+
+Observe
+Can the original decision still be proven? Is the tampering detectable?
+
+Expected Results
+Database-only logs will be modified without detection, making it impossible to prove the original decision. Blockchain logs should remain immutable, providing cryptographic proof of the original access decision even after a DB attack.
+
+Results Table
+Storage
+Attack Applied
+Tampered?
+Detectable?
+Evidence Available?
+Database Only
+Modify log entry
+Yes / No
+Yes / No
+Yes / No / Partial
+Database Only
+Delete log entry
+Yes / No
+Yes / No
+Yes / No / Partial
+Blockchain Only
+Attempt modification
+Yes / No
+Yes / No
+Yes / No / Partial
+Blockchain Only
+Attempt deletion
+Yes / No
+Yes / No
+Yes / No / Partial
+
+
+EXPERIMENT 3  —  Hybrid Audit Storage (DB + Blockchain)
+
+Objective
+Validate that a hybrid audit model — storing logs simultaneously in both a centralized database and on the blockchain — provides the best balance between query performance and tamper-evident integrity.
+Scenario Description
+Setup
+All access logs written to both DB and blockchain simultaneously
+
+Attack
+Modify the DB record for a specific access event
+
+Observe
+Compare DB record vs blockchain record — do they match? Is the discrepancy detected?
+
+Expected Results
+After tampering with the DB record, querying the blockchain should reveal the original decision. The mismatch between DB and blockchain records should be automatically or manually detectable, demonstrating that the hybrid model provides both accessibility and integrity.
+
+Results Table — Record Comparison After Attack
+Log Source
+Recorded Decision
+Timestamp
+Records Match?
+Integrity Status
+Database (Post-Attack)
+Allow / Deny
+Timestamp
+Yes / No
+Verified / Compromised
+Blockchain (Original)
+Allow / Deny
+Timestamp
+Yes / No
+Verified / Compromised
+Audit Comparison Result
+Allow / Deny
+Timestamp
+Yes / No
+Verified / Compromised
+
+
+EXPERIMENT 4  —  Policy Versioning Traceability
+
+Objective
+Confirm that the governance platform correctly tracks which version of a policy was active at the time of each access decision, enabling complete audit trail reconstruction even after a policy change.
+Scenario Description
+Step 1
+Execute access request using Policy v1 — record decision
+
+Step 2
+Update the active policy to v2 (modify access rules)
+
+Step 3
+Execute the same access request again — record decision
+
+Observe
+Are decisions traceable to the correct policy version? Is version metadata stored in the audit log?
+
+Expected Results
+Each decision in the audit log should be annotated with the exact policy version active at that time. Decisions made under v1 and v2 should be independently verifiable, even if they produce different outcomes for the same request.
+
+Results Table
+Run #
+Policy Version Active
+Request (Same Scenario)
+Decision
+Version in Log?
+1
+v1
+Doctor → Patient Record
+Allow / Deny
+Yes / No
+2
+v1
+Doctor → Patient Record
+Allow / Deny
+Yes / No
+3
+v2
+Doctor → Patient Record
+Allow / Deny
+Yes / No
+4
+v2
+Doctor → Patient Record
+Allow / Deny
+Yes / No
+
+
+EXPERIMENT 5  —  Unauthorized Access Handling
+
+Objective
+Verify that both policy engines correctly enforce access control for valid and invalid access requests, and confirm that enforcement is consistent and reliable across multiple runs.
+Scenario Description
+Actor
+Doctor (authenticated, role = Physician)
+
+Valid Access
+Doctor accessing patient record for treatment purpose → should ALLOW
+
+Invalid Access
+Doctor accessing patient record for research purpose → should DENY
+
+Engines Tested
+JSON Engine and OPA Engine — both evaluated on the same scenarios
+
+Expected Results
+Both engines should consistently ALLOW valid treatment access and DENY research access. Any inconsistency between runs or between engines signals a policy enforcement vulnerability.
+
+Results Table — Decision Accuracy
+Engine
+Scenario
+Expected
+Actual Decision
+Correct?
+JSON Engine
+Treatment Access (Valid)
+ALLOW
+Allow / Deny
+✓ / ✗
+
+Research Access (Invalid)
+DENY
+Allow / Deny
+✓ / ✗
+
+Expired Credentials
+DENY
+Allow / Deny
+✓ / ✗
+
+Cross-department Access
+DENY
+Allow / Deny
+✓ / ✗
+OPA Engine
+Treatment Access (Valid)
+ALLOW
+Allow / Deny
+✓ / ✗
+
+Research Access (Invalid)
+DENY
+Allow / Deny
+✓ / ✗
+
+Expired Credentials
+DENY
+Allow / Deny
+✓ / ✗
+
+Cross-department Access
+DENY
+Allow / Deny
+✓ / ✗
+
+Consistency Check — Multiple Runs
+Engine
+Scenario
+Run 1
+Run 2
+Run 3
+Consistent?
+JSON Engine
+Treatment Access (Valid)
+—
+—
+—
+Yes / No
+
+Research Access (Invalid)
+—
+—
+—
+Yes / No
+OPA Engine
+Treatment Access (Valid)
+—
+—
+—
+Yes / No
+
+Research Access (Invalid)
+—
+—
+—
+Yes / No
+
+
+EXPERIMENT 6  —  Latency Overhead
+
+Objective
+Quantify the performance overhead introduced by each configuration — policy engine choice and audit storage mechanism — to determine whether the added security of OPA and blockchain logging imposes an acceptable latency cost for real-world healthcare deployment.
+Configurations Tested
+#
+Configuration
+Description
+A
+JSON Engine, No Audit Logging
+Baseline — enforcement only, no logging overhead
+B
+JSON Engine, DB Logging
+Standard centralized audit trail
+C
+JSON Engine, Blockchain Logging
+Enforcement + tamper-evident logging
+D
+JSON Engine, Hybrid Logging
+Enforcement + DB + Blockchain simultaneously
+E
+OPA Engine, No Audit Logging
+OPA baseline — enforcement only
+F
+OPA Engine, DB Logging
+OPA + centralized audit trail
+G
+OPA Engine, Blockchain Logging
+OPA + tamper-evident logging
+H
+OPA Engine, Hybrid Logging
+OPA + DB + Blockchain — full governance stack
+
+Results Table
+Config
+Description
+Min (ms)
+Max (ms)
+Avg (ms)
+Notes
+A
+JSON Only
+—
+—
+—
+
+B
+JSON + DB
+—
+—
+—
+
+C
+JSON + Blockchain
+—
+—
+—
+
+D
+JSON + Hybrid
+—
+—
+—
+
+E
+OPA Only
+—
+—
+—
+
+F
+OPA + DB
+—
+—
+—
+
+G
+OPA + Blockchain
+—
+—
+—
+
+H
+OPA + Hybrid
+—
+—
+—
+
+
+Latency Summary — Key Comparisons
+Comparison
+Avg Δ Latency (ms)
+Interpretation
+JSON vs OPA (no logging)
++?? ms
+
+DB logging vs No logging
++?? ms
+
+Blockchain vs DB logging
++?? ms
+
+Hybrid vs Blockchain only
++?? ms
+
+
+
+Discussion Notes & Observations
+Use this section to record key findings, unexpected results, and emerging insights as experiments are completed.
+
+Key Insight to Uphold
+A hybrid governance architecture combining policy-as-code enforcement with tamper-evident audit mechanisms provides stronger compliance assurance than traditional centralized approaches.
+
+What Blockchain Does and Does NOT Do
+✗  Blockchain does NOT...
+✓  Blockchain DOES...
+Enforce or prevent access decisions in real time
+Provide tamper-evident records of past decisions
+Replace a policy engine for rule evaluation
+Enable trust and accountability after the fact
+Improve access decision latency
+Preserve cryptographic proof of original logs
+Define what is or is not compliant
+Support audit trail integrity under adversarial conditions
+
+Limitations to Acknowledge
+	•	Small-scale testing environment — results may not scale directly to production hospital systems
+	•	Synthetic dataset used — no real patient data or real EHR integration
+	•	Limited blockchain deployment — simplified setup, not a full distributed ledger network
+	•	Latency measurements taken on a single machine — network latency not modeled
+	•	Qualitative assessments (policy expressiveness) are subjective and rater-dependent
+
+Open Observations / Notes
+Experiment
+Observation / Surprise / Note
+Exp 1 — Policy Engines
+Record any unexpected findings here
+Exp 2 — DB vs Blockchain
+Record any unexpected findings here
+Exp 3 — Hybrid Audit
+Record any unexpected findings here
+Exp 4 — Policy Versioning
+Record any unexpected findings here
+Exp 5 — Unauthorized Access
+Record any unexpected findings here
+Exp 6 — Latency
+Record any unexpected findings here
+

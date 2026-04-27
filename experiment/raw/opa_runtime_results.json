@@ -1,0 +1,122 @@
+[
+  {
+    "case": "allow",
+    "ms": 4495.93,
+    "decision": "ALLOW",
+    "runtimeUsed": "OPA",
+    "reason": "allow: clinician treatment access",
+    "evidenceId": "99a3f6ad76755d2124588b994e2b2d9f5bc6f298181035c981f56f970449ef4a"
+  },
+  {
+    "case": "deny_cross_dept",
+    "ms": 2054.13,
+    "decision": "DENY",
+    "runtimeUsed": "OPA",
+    "reason": "deny: cross-department access",
+    "evidenceId": "4daa0ca31d2f2f56fca036e6dcc68cfcf387d204e1a610f3293e13159cf51a6b"
+  },
+  {
+    "case": "deny_research",
+    "ms": 2084.35,
+    "decision": "DENY",
+    "runtimeUsed": "OPA",
+    "reason": "deny: research requires GDPR consent",
+    "evidenceId": "88fa50a95c5fda49fc70a85d12c2eebce5faf3eb109193625e911c6af9408029"
+  },
+  {
+    "case": "allow",
+    "ms": 2060.01,
+    "decision": "ALLOW",
+    "runtimeUsed": "OPA",
+    "reason": "allow: clinician treatment access",
+    "evidenceId": "3f4c57d60c1b4eba262fe4c3a765a0354c9f59a0d7f46e42958e30106b11402a"
+  },
+  {
+    "case": "deny_cross_dept",
+    "ms": 2051.17,
+    "decision": "DENY",
+    "runtimeUsed": "OPA",
+    "reason": "deny: cross-department access",
+    "evidenceId": "60421f617e96a9958f84048e1c720a54d62f63608dfc1cbce7091a14c57da6b8"
+  },
+  {
+    "case": "deny_research",
+    "ms": 2055.71,
+    "decision": "DENY",
+    "runtimeUsed": "OPA",
+    "reason": "deny: research requires GDPR consent",
+    "evidenceId": "85fd56b82f7a58c84dec54e58705d5e8280032c3e42633e9ec8175c5fba64d39"
+  },
+  {
+    "case": "allow",
+    "ms": 2147.99,
+    "decision": "ALLOW",
+    "runtimeUsed": "OPA",
+    "reason": "allow: clinician treatment access",
+    "evidenceId": "a5aa8967b504913c180202baa40d222d6612062e2f1039edd52f4d78fa5a8259"
+  },
+  {
+    "case": "deny_cross_dept",
+    "ms": 2064.54,
+    "decision": "DENY",
+    "runtimeUsed": "OPA",
+    "reason": "deny: cross-department access",
+    "evidenceId": "cafb1b437626e8d749fa098744ca5f0d361fef3af255cc4409ad6fc55573f7a6"
+  },
+  {
+    "case": "deny_research",
+    "ms": 2052.21,
+    "decision": "DENY",
+    "runtimeUsed": "OPA",
+    "reason": "deny: research requires GDPR consent",
+    "evidenceId": "12c3c1a813bcec495de4131fe0e7bb7c3af09009b226c31a747d5d775bed97f2"
+  },
+  {
+    "case": "allow",
+    "ms": 2111.69,
+    "decision": "ALLOW",
+    "runtimeUsed": "OPA",
+    "reason": "allow: clinician treatment access",
+    "evidenceId": "8c989cad229c2a68a739a4edc6746dbbb59db17d6be5f8e75c6dee224cf36779"
+  },
+  {
+    "case": "deny_cross_dept",
+    "ms": 2076.73,
+    "decision": "DENY",
+    "runtimeUsed": "OPA",
+    "reason": "deny: cross-department access",
+    "evidenceId": "caf000bec6be931e06526a27630f139938ccbe2c4c5cd6be1e5cafd90b4f56e4"
+  },
+  {
+    "case": "deny_research",
+    "ms": 2045.94,
+    "decision": "DENY",
+    "runtimeUsed": "OPA",
+    "reason": "deny: research requires GDPR consent",
+    "evidenceId": "3564fdffec1011e321cf0956006de207b064e102dcd9c1f0c695fd14d06fff96"
+  },
+  {
+    "case": "allow",
+    "ms": 2068.8,
+    "decision": "ALLOW",
+    "runtimeUsed": "OPA",
+    "reason": "allow: clinician treatment access",
+    "evidenceId": "b9a4510ebf369a231d3053047818e3dd69f2d59e8ccc7ab5e5ec8268cfc425c6"
+  },
+  {
+    "case": "deny_cross_dept",
+    "ms": 2084.94,
+    "decision": "DENY",
+    "runtimeUsed": "OPA",
+    "reason": "deny: cross-department access",
+    "evidenceId": "01dec8fae679d13f87123f350b7dfc0029ae1444044c749f0ec2a1f1d9426670"
+  },
+  {
+    "case": "deny_research",
+    "ms": 2062.46,
+    "decision": "DENY",
+    "runtimeUsed": "OPA",
+    "reason": "deny: research requires GDPR consent",
+    "evidenceId": "8f5f0e6f0911376e1e5055a10a56157ff57490994e034141fd91f8bc9ce1360d"
+  }
+]

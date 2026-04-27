@@ -1,0 +1,149 @@
+---
+title: Spring Boot Integration
+description: Integrate Governance policy enforcement and audit immutability into an existing Spring Boot backend.
+---
+
+# Spring Boot Integration
+
+See **[Platform roles & frontend integration](../platform-roles-and-frontend.mdx)** for **who uses `X-Admin-Secret` vs `X-API-Key`** when you add a management UI or BFF.
+
+This integration pattern is for systems that already have:
+- patient data in their own DB
+- RBAC for hospital roles
+
+Recommended flow:
+1. Keep your RBAC checks.
+2. Call Governance `/api/v1/authorize` for fine-grained policy decision.
+3. Proceed or block based on `ALLOW`/`DENY`.
+4. Send security/operational events to `/api/v1/audit/ingest`.
+
+All runtime API calls require `X-API-Key` and are tenant-scoped.
+
+## 1) Configuration
+
+```yaml
+governance:
+  base-url: http://localhost:8080
+  api-key: ${GOVERNANCE_API_KEY:}
+```
+
+## 2) WebClient bean
+
+```java
+@Configuration
+public class GovernanceClientConfig {
+    @Bean
+    WebClient governanceWebClient(
+            @Value("${governance.base-url}") String baseUrl,
+            @Value("${governance.api-key:}") String apiKey
+    ) {
+        return WebClient.builder()
+                .baseUrl(baseUrl)
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .defaultHeaders(headers -> {
+                    if (apiKey != null && !apiKey.isBlank()) {
+                        headers.add("X-API-Key", apiKey);
+                    }
+                })
+                .build();
+    }
+}
+```
+
+## 3) Policy client
+
+```java
+@Service
+@RequiredArgsConstructor
+public class GovernancePolicyClient {
+    private final WebClient governanceWebClient;
+
+    public AuthorizationDecision authorize(AuthorizationRequest request) {
+        return governanceWebClient.post()
+                .uri("/api/v1/authorize")
+                .bodyValue(request)
+                .retrieve()
+                .bodyToMono(AuthorizationDecision.class)
+                .block();
+    }
+}
+```
+
+## 4) Enforce policy in service layer
+
+```java
+@Service
+@RequiredArgsConstructor
+public class PatientAccessService {
+    private final GovernancePolicyClient governancePolicyClient;
+    private final PatientRepository patientRepository;
+
+    public PatientRecord getPatientRecord(UserPrincipal user, String patientId) {
+        if (!user.hasRole("Doctor") && !user.hasRole("Nurse")) {
+            throw new AccessDeniedException("RBAC denied");
+        }
+
+        AuthorizationRequest request = AuthorizationRequest.builder()
+                .requestId(UUID.randomUUID())
+                .subject(SubjectDTO.builder()
+                        .userId(user.getUserId())
+                        .role(user.getPrimaryRole())
+                        .department(user.getDepartment())
+                        .build())
+                .resource(ResourceDTO.builder()
+                        .type("PatientRecord")
+                        .resourceId(patientId)
+                        .build())
+                .action("READ")
+                .context(ContextDTO.builder()
+                        .purpose("treatment")
+                        .timestamp(Instant.now())
+                        .attributes(Map.of(
+                                "legalBasis", "HIPAA",
+                                "consentGranted", true,
+                                "region", "US",
+                                "sourceSystem", "hospital-ehr"
+                        ))
+                        .build())
+                .build();
+
+        AuthorizationDecision decision = governancePolicyClient.authorize(request);
+        if (decision.getDecision() != AuthorizationDecision.Decision.ALLOW) {
+            throw new AccessDeniedException("Policy denied: " + decision.getReason());
+        }
+
+        return patientRepository.findById(patientId)
+                .orElseThrow(() -> new EntityNotFoundException("Patient not found"));
+    }
+}
+```
+
+## 5) Audit forwarding client
+
+```java
+@Service
+@RequiredArgsConstructor
+public class GovernanceAuditClient {
+    private final WebClient governanceWebClient;
+
+    public void sendAudit(String actor, String patientId, String action, String outcome) {
+        AuditIngestRequest body = AuditIngestRequest.builder()
+                .sourceSystem("hospital-ehr")
+                .actor(actor)
+                .targetResource(patientId)
+                .action(action)
+                .decision(outcome)
+                .timestamp(Instant.now())
+                .correlationId("ehr-" + UUID.randomUUID())
+                .metadata(Map.of("module", "patient-service"))
+                .build();
+
+        governanceWebClient.post()
+                .uri("/api/v1/audit/ingest")
+                .bodyValue(body)
+                .retrieve()
+                .bodyToMono(AuditIngestResponse.class)
+                .block();
+    }
+}
+```

@@ -1,0 +1,76 @@
+---
+title: Platform roles & frontend integration
+description: Self-service developer portal (JWT), API keys for integrations, and optional operator admin.
+---
+
+# Platform roles & frontend integration
+
+Use this page when building the **developer console** (Groq-style: register, login, API keys, snippets) and when wiring **EHR / backend** integrations.
+
+## 1. Roles (conceptual)
+
+| Role | Who | What they do | API auth |
+|------|-----|----------------|----------|
+| **Portal user (customer org admin)** | Hospital IT / integration lead | Signs up, logs in, creates **API keys**, copies **code snippets** | **`Authorization: Bearer`** on **`/api/v1/portal/*`**; **`POST /api/v1/auth/register`**, **`POST /api/v1/auth/login`** have **no** API key |
+| **Integration runtime** | EHR backend, BFF, workers | Calls policy + audit + compliance | **`X-API-Key`** only (no portal JWT) |
+| **Platform operator (optional)** | Your staff | Legacy listing of all tenants, issue keys by `tenantId` | **`X-Admin-Secret`** on **`/api/v1/admin/*`** only |
+
+Clinical end-users (doctors, patients) **do not** use this API; they stay in the EHR. The portal is for **developers and admins** who manage **keys** that the backend uses.
+
+## 2. Self-service developer portal (recommended)
+
+| Action | Method | Path |
+|--------|--------|------|
+| Register org + first user | `POST` | `/api/v1/auth/register` |
+| Login | `POST` | `/api/v1/auth/login` |
+| Current user + org | `GET` | `/api/v1/portal/me` |
+| List keys (metadata / prefix) | `GET` | `/api/v1/portal/api-keys` |
+| Create key (full `gdk_…` once) | `POST` | `/api/v1/portal/api-keys` |
+| Revoke key | `DELETE` | `/api/v1/portal/api-keys/{keyId}` |
+| Snippets (HIPAA authorize, GDPR authorize, audit ingest) | `GET` | `/api/v1/portal/code-snippets` |
+
+**Frontend guide:** see **`docs/frontend-developer-portal-guide.md`** in the repo for page-level UX and security notes.
+
+## 3. Optional admin API (operator / migration)
+
+All require **`X-Admin-Secret`**.
+
+| Action | Method | Path |
+|--------|--------|------|
+| Register organisation | `POST` | `/api/v1/admin/tenants` |
+| List organisations | `GET` | `/api/v1/admin/tenants` |
+| Organisation detail (+ key metadata) | `GET` | `/api/v1/admin/tenants/{tenantId}` |
+| Issue API key | `POST` | `/api/v1/admin/api-keys` |
+
+## 4. Tenant runtime API (same API key for policy + audit)
+
+| Feature | Method | Path | Header |
+|---------|--------|------|--------|
+| Policy enforcement | `POST` | `/api/v1/authorize` | `X-API-Key` |
+| Immutable audit pipeline | `POST` | `/api/v1/audit/ingest` | `X-API-Key` |
+| Verify anchored event | `GET` | `/api/v1/audit/verify/{correlationId}` | `X-API-Key` |
+| HIPAA/GDPR catalog | `GET` | `/api/v1/compliance/catalog` | `X-API-Key` |
+| Compliance evidence scoring | `POST` | `/api/v1/compliance/evaluate` | `X-API-Key` |
+| Usage metrics | `GET` | `/api/v1/metrics` | `X-API-Key` |
+
+## 5. Environment defaults relevant to demos
+
+- **`GOVERNANCE_POLICY_RUNTIME=JSON`** — policies in DB (seeded migrations).
+- **`GOVERNANCE_AUDIT_STORAGE=BOTH`** — governance stores metadata + chain/stub anchor (see server config).
+- **`GOVERNANCE_BLOCKCHAIN_STUB=true`** — local dev without Hyperledger; ingest still returns an **`evidenceId`** (`stub-tx-*`). Set **`false`** + Fabric env vars for a real network.
+- **`GOVERNANCE_JWT_SECRET`** — portal JWT signing secret (min 32 chars); **server only**.
+- **`GOVERNANCE_PUBLIC_BASE_URL`** — embedded in **`GET /api/v1/portal/code-snippets`** curl examples.
+
+## 6. Frontend security rules (non-negotiable)
+
+- **Never** put **`GOVERNANCE_ADMIN_SECRET`** or **`GOVERNANCE_JWT_SECRET`** in client bundles.
+- **Never** expose raw **`gdk_…`** keys in UI after issuance (show once at creation, then **prefix** only).
+- Prefer **httpOnly cookies** or **BFF** for portal JWT in production SPAs.
+
+## 7. Related docs
+
+- Narrative journey: `docs/platform-onboarding-journey.md` (repo root)
+- Full API: `docs/developer-platform-api-guide.md`
+- **Frontend portal:** `docs/frontend-developer-portal-guide.md`
+- EHR integration pattern: `docs/ehr-emr-governance-integration-guide.md`
+- Pages under `/getting-started`, `/integration/spring-boot`, `/reference/*`

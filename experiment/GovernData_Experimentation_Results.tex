@@ -1,0 +1,112 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{parskip}
+\title{GovernData Experimental Results --- Real OPA \& Real Hyperledger Fabric}
+\author{EHR-EMR + Governance Integration (Reproducible Run 2026-03-29)}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This report documents results from the full experiment matrix executed in \textbf{real mode}: Open Policy Agent (OPA) without JSON fallback, and Hyperledger Fabric anchoring with \texttt{GOVERNANCE\_BLOCKCHAIN\_STUB=false}. Raw measurements are stored under \texttt{experiment/raw/}. Step-by-step reproduction is in \texttt{experiment/EXPERIMENT\_JOURNEY.md}; implementation details are in \texttt{governdata/docs/implementation-opa-real-mode.md} and \texttt{governdata/docs/implementation-fabric-real-mode.md}.
+\end{abstract}
+
+\section{Execution Context}
+\begin{itemize}
+  \item \textbf{Governance base URL}: \texttt{http://localhost:8080}
+  \item \textbf{Tenant key}: \texttt{ehremr} (organization EHREME)
+  \item \textbf{API authentication}: header \texttt{X-API-Key} (tenant integration key; configure in \texttt{ehr-emr-be/.env} as \texttt{GOVERNANCE\_API\_KEY})
+  \item \textbf{OPA}: \texttt{http://localhost:8181/v1/data/healthcare/authz/result}
+  \item \textbf{Fabric}: test-network channel \texttt{mychannel}; chaincode name \texttt{governance}; wallet identity \texttt{org1-admin}
+  \item \textbf{PostgreSQL}: database \texttt{governdata} (local); tamper SQL on table \texttt{external\_audit\_events}
+\end{itemize}
+
+\section{Status: Experiments Completed}
+\begin{longtable}{p{3cm}p{9cm}}
+\toprule
+Experiment (thesis \#) & Status \\
+\midrule
+1 --- Policy engine (JSON vs OPA) & \textbf{Done} --- client latency captured per runtime; see \texttt{matrix\_summary\_20260329.json} \\
+2 --- DB vs blockchain integrity & \textbf{Done} --- \texttt{DB\_ONLY}, \texttt{BLOCKCHAIN\_ONLY}, \texttt{BOTH} runs; tamper sequence executed \\
+3 --- Hybrid audit & \textbf{Done} --- \texttt{BOTH} with real \texttt{evidenceId} \\
+4 --- Policy version traceability & \textbf{Done} --- \texttt{policyVersion} repeated in \texttt{full\_experiment\_*.json} \\
+5 --- Unauthorized / invalid access & \textbf{Done} --- GDPR no-consent scenario in script output \\
+6 --- Latency overhead & \textbf{Done} --- summarized below (warmup discarded in script) \\
+\bottomrule
+\end{longtable}
+
+\section{Experiment 1 \& 6: Latency and Engine Comparison}
+Client-side timings: \texttt{experiment/scripts/full\_experiment\_run.py}, 8 iterations $\times$ 3 scenarios, 2 warmup rounds discarded. \textbf{Note}: \texttt{/api/v1/benchmark/policy-runtime} is invoked with \texttt{iterations=1} because the server rejects duplicate \texttt{requestId} across benchmark iterations (HTTP 409).
+
+\begin{longtable}{p{4.5cm}p{2cm}p{2cm}p{2cm}p{2.5cm}}
+\toprule
+Run artifact (label) & Avg (ms) & Min (ms) & Max (ms) & p95 (ms) \\
+\midrule
+\texttt{JSON\_BOTH} & 2085.11 & 2040.88 & 2353.16 & 2125.88 \\
+\texttt{OPA\_BOTH\_MATRIX} & 2081.61 & 2041.50 & 2320.15 & 2106.08 \\
+\texttt{OPA\_DB\_ONLY} & 19.73 & 11.57 & 36.44 & 29.16 \\
+\texttt{OPA\_BLOCKCHAIN\_ONLY} & 2066.38 & 2024.22 & 2132.47 & 2108.67 \\
+\bottomrule
+\end{longtable}
+
+\textbf{Interpretation}: Authorize latency with \texttt{BOTH} and real Fabric includes ledger commit time ($\sim$2\,s locally). \texttt{DB\_ONLY} configuration dramatically reduces measured authorize latency in this setup because the Fabric anchor path is not used for those measurements in the same way --- compare only within the same storage mode when reporting thesis numbers.
+
+\section{Experiment 2 \& 3: Audit Storage Modes (Real Fabric)}
+Ingest/verify samples are embedded in each \texttt{full\_experiment\_*.json} under \texttt{experiment\_ingest\_verify\_current\_mode}.
+
+\begin{longtable}{p{3.5cm}p{4cm}p{5.5cm}}
+\toprule
+\texttt{GOVERNANCE\_AUDIT\_STORAGE} & Typical verify status & Evidence \\
+\midrule
+\texttt{DB\_ONLY} & \texttt{VERIFIED} (DB-backed) & No Fabric tx id on ingest \\
+\texttt{BLOCKCHAIN\_ONLY} & \texttt{VERIFIED} / \texttt{ANCHORED} & Real \texttt{evidenceId} \\
+\texttt{BOTH} & \texttt{VERIFIED} & DB row + real \texttt{evidenceId} \\
+\bottomrule
+\end{longtable}
+
+\section{Experiment 4: Policy Version Traceability}
+Each \texttt{full\_experiment\_*.json} contains \texttt{experiment4\_policy\_two} (two calls) with \texttt{policyVersion} and \texttt{policyVersionId} fields for traceability.
+
+\section{Experiment 5: Unauthorized / Invalid Access}
+The automated script includes \texttt{experiment5\_unauthorized} (e.g.\ GDPR consent denied). Responses must show \texttt{DENY} when policy requires consent.
+
+\section{Tamper Evidence (Experiment 2 / 3 narrative)}
+Example correlation id: \texttt{journey-tamper-1774819292} (see \texttt{experiment/raw/tamper\_journey\_run.json}).
+
+\begin{enumerate}
+  \item \texttt{GET /api/v1/audit/verify/\{id\}} $\rightarrow$ \texttt{VERIFIED}
+  \item SQL \texttt{UPDATE} on \texttt{external\_audit\_events} $\rightarrow$ \texttt{MISMATCH}
+  \item SQL \texttt{DELETE} of row $\rightarrow$ \texttt{VERIFIED\_CHAIN\_ONLY}
+\end{enumerate}
+
+\section{Artifacts Index}
+\begin{itemize}
+  \item \texttt{experiment/raw/full\_experiment\_JSON\_BOTH\_*.json}
+  \item \texttt{experiment/raw/full\_experiment\_OPA\_BOTH\_MATRIX\_*.json}
+  \item \texttt{experiment/raw/full\_experiment\_OPA\_DB\_ONLY\_*.json}
+  \item \texttt{experiment/raw/full\_experiment\_OPA\_BLOCKCHAIN\_ONLY\_*.json}
+  \item \texttt{experiment/raw/matrix\_summary\_20260329.json}
+  \item \texttt{experiment/raw/tamper\_journey\_run.json}
+\end{itemize}
+
+\section{Reproducibility Commands}
+\begin{verbatim}
+./experiment/scripts/run_governance_matrix.sh
+python3 experiment/scripts/full_experiment_run.py --label MY_LABEL
+\end{verbatim}
+
+\section{Credentials Reference (development)}
+\begin{itemize}
+  \item EHR demo: \texttt{clinician1} / \texttt{clinician123!}; \texttt{admin} / \texttt{admin123!}
+  \item Governance portal (optional): use project owner account for API key issuance
+  \item API key: set \texttt{GOVERNANCE\_API\_KEY} in \texttt{ehr-emr-be/.env}; never commit production secrets
+\end{itemize}
+
+\section{Conclusion}
+Real OPA and real Fabric modes were exercised end-to-end; raw JSON artifacts support tables in this document. For presentation slides, emphasize: (1) \texttt{runtimeUsed} values, (2) non-stub \texttt{evidenceId}, (3) tamper sequence outcomes, (4) latency caveats when Fabric commit is on the critical path.
+
+\end{document}

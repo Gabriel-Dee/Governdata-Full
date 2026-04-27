@@ -1,0 +1,138 @@
+package com.governdata.ehr_emr_be.auth;
+
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.annotation.Profile;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
+
+/**
+ * Ensures auth/RBAC baseline exists even on existing databases that were created before Flyway migrations.
+ * Skipped for {@code test} profile (H2): use {@code classpath:test-seed-data.sql} instead.
+ */
+@Component
+@Profile("!test")
+public class AuthBootstrapInitializer implements ApplicationRunner {
+
+    private final JdbcTemplate jdbcTemplate;
+
+    public AuthBootstrapInitializer(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
+    @Override
+    public void run(ApplicationArguments args) {
+        jdbcTemplate.execute("""
+                CREATE TABLE IF NOT EXISTS roles (
+                    id UUID PRIMARY KEY,
+                    code VARCHAR(64) NOT NULL UNIQUE,
+                    description VARCHAR(255)
+                )
+                """);
+        jdbcTemplate.execute("""
+                CREATE TABLE IF NOT EXISTS permissions (
+                    id UUID PRIMARY KEY,
+                    code VARCHAR(128) NOT NULL UNIQUE,
+                    resource_type VARCHAR(64) NOT NULL,
+                    action VARCHAR(64) NOT NULL,
+                    description VARCHAR(255)
+                )
+                """);
+        jdbcTemplate.execute("""
+                CREATE TABLE IF NOT EXISTS user_roles (
+                    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                    role_id UUID NOT NULL REFERENCES roles(id) ON DELETE CASCADE,
+                    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    PRIMARY KEY (user_id, role_id)
+                )
+                """);
+        jdbcTemplate.execute("""
+                CREATE TABLE IF NOT EXISTS role_permissions (
+                    role_id UUID NOT NULL REFERENCES roles(id) ON DELETE CASCADE,
+                    permission_id UUID NOT NULL REFERENCES permissions(id) ON DELETE CASCADE,
+                    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    PRIMARY KEY (role_id, permission_id)
+                )
+                """);
+
+        jdbcTemplate.execute("""
+                INSERT INTO roles (id, code, description) VALUES
+                ('10000000-0000-0000-0000-000000000001', 'ADMIN', 'System administrator'),
+                ('10000000-0000-0000-0000-000000000002', 'CLINICIAN', 'Clinical staff with read/write clinical access'),
+                ('10000000-0000-0000-0000-000000000003', 'NURSE', 'Nursing staff with read/write selected data'),
+                ('10000000-0000-0000-0000-000000000004', 'RESEARCHER', 'Research role with read-only access'),
+                ('10000000-0000-0000-0000-000000000005', 'BILLING', 'Billing operations role')
+                ON CONFLICT (code) DO NOTHING
+                """);
+        jdbcTemplate.execute("""
+                INSERT INTO permissions (id, code, resource_type, action, description) VALUES
+                ('20000000-0000-0000-0000-000000000001', 'patient.read', 'patient', 'read', 'Read a patient record'),
+                ('20000000-0000-0000-0000-000000000002', 'patient.list', 'patient', 'list', 'List/search patients'),
+                ('20000000-0000-0000-0000-000000000003', 'patient.create', 'patient', 'create', 'Create a patient'),
+                ('20000000-0000-0000-0000-000000000004', 'patient.update', 'patient', 'update', 'Update patient demographics'),
+                ('20000000-0000-0000-0000-000000000005', 'encounter.read', 'encounter', 'read', 'Read encounter'),
+                ('20000000-0000-0000-0000-000000000006', 'encounter.create', 'encounter', 'create', 'Create encounter'),
+                ('20000000-0000-0000-0000-000000000007', 'diagnosis.read', 'diagnosis', 'read', 'Read diagnosis'),
+                ('20000000-0000-0000-0000-000000000008', 'diagnosis.create', 'diagnosis', 'create', 'Create diagnosis'),
+                ('20000000-0000-0000-0000-000000000009', 'medication.read', 'medication', 'read', 'Read medication'),
+                ('20000000-0000-0000-0000-000000000010', 'medication.create', 'medication', 'create', 'Create medication'),
+                ('20000000-0000-0000-0000-000000000011', 'staff.manage', 'staff', 'manage', 'Manage staff and roles'),
+                ('20000000-0000-0000-0000-000000000012', 'analytics.read', 'analytics', 'read', 'Read de-identified analytics'),
+                ('20000000-0000-0000-0000-000000000013', 'audit.read', 'audit', 'read', 'Read local structured audit trail')
+                ON CONFLICT (code) DO NOTHING
+                """);
+
+        jdbcTemplate.execute("""
+                INSERT INTO role_permissions (role_id, permission_id)
+                SELECT '10000000-0000-0000-0000-000000000001', id FROM permissions
+                ON CONFLICT (role_id, permission_id) DO NOTHING
+                """);
+        jdbcTemplate.execute("""
+                INSERT INTO role_permissions (role_id, permission_id) VALUES
+                ('10000000-0000-0000-0000-000000000002', '20000000-0000-0000-0000-000000000001'),
+                ('10000000-0000-0000-0000-000000000002', '20000000-0000-0000-0000-000000000002'),
+                ('10000000-0000-0000-0000-000000000002', '20000000-0000-0000-0000-000000000003'),
+                ('10000000-0000-0000-0000-000000000002', '20000000-0000-0000-0000-000000000004'),
+                ('10000000-0000-0000-0000-000000000002', '20000000-0000-0000-0000-000000000005'),
+                ('10000000-0000-0000-0000-000000000002', '20000000-0000-0000-0000-000000000006'),
+                ('10000000-0000-0000-0000-000000000002', '20000000-0000-0000-0000-000000000007'),
+                ('10000000-0000-0000-0000-000000000002', '20000000-0000-0000-0000-000000000008'),
+                ('10000000-0000-0000-0000-000000000002', '20000000-0000-0000-0000-000000000009'),
+                ('10000000-0000-0000-0000-000000000002', '20000000-0000-0000-0000-000000000010'),
+                ('10000000-0000-0000-0000-000000000003', '20000000-0000-0000-0000-000000000001'),
+                ('10000000-0000-0000-0000-000000000003', '20000000-0000-0000-0000-000000000002'),
+                ('10000000-0000-0000-0000-000000000003', '20000000-0000-0000-0000-000000000005'),
+                ('10000000-0000-0000-0000-000000000003', '20000000-0000-0000-0000-000000000006'),
+                ('10000000-0000-0000-0000-000000000003', '20000000-0000-0000-0000-000000000007'),
+                ('10000000-0000-0000-0000-000000000003', '20000000-0000-0000-0000-000000000008'),
+                ('10000000-0000-0000-0000-000000000003', '20000000-0000-0000-0000-000000000009'),
+                ('10000000-0000-0000-0000-000000000003', '20000000-0000-0000-0000-000000000010'),
+                ('10000000-0000-0000-0000-000000000004', '20000000-0000-0000-0000-000000000001'),
+                ('10000000-0000-0000-0000-000000000004', '20000000-0000-0000-0000-000000000002'),
+                ('10000000-0000-0000-0000-000000000004', '20000000-0000-0000-0000-000000000005'),
+                ('10000000-0000-0000-0000-000000000004', '20000000-0000-0000-0000-000000000007'),
+                ('10000000-0000-0000-0000-000000000004', '20000000-0000-0000-0000-000000000009'),
+                ('10000000-0000-0000-0000-000000000004', '20000000-0000-0000-0000-000000000012'),
+                ('10000000-0000-0000-0000-000000000005', '20000000-0000-0000-0000-000000000002')
+                ON CONFLICT (role_id, permission_id) DO NOTHING
+                """);
+        jdbcTemplate.execute("""
+                INSERT INTO users (id, username, email, password_hash, first_name, last_name, active, created_at, updated_at) VALUES
+                ('30000000-0000-0000-0000-000000000001', 'admin', 'admin@healthcentre.local', '{noop}admin123!', 'System', 'Admin', TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+                ('30000000-0000-0000-0000-000000000002', 'clinician1', 'clinician1@healthcentre.local', '{noop}clinician123!', 'Alice', 'Clinician', TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+                ('30000000-0000-0000-0000-000000000003', 'nurse1', 'nurse1@healthcentre.local', '{noop}nurse123!', 'Nina', 'Nurse', TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+                ('30000000-0000-0000-0000-000000000004', 'researcher1', 'researcher1@healthcentre.local', '{noop}researcher123!', 'Ravi', 'Researcher', TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+                ('30000000-0000-0000-0000-000000000005', 'billing1', 'billing1@healthcentre.local', '{noop}billing123!', 'Bill', 'Officer', TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+                ON CONFLICT (username) DO NOTHING
+                """);
+        jdbcTemplate.execute("""
+                INSERT INTO user_roles (user_id, role_id) VALUES
+                ('30000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000001'),
+                ('30000000-0000-0000-0000-000000000002', '10000000-0000-0000-0000-000000000002'),
+                ('30000000-0000-0000-0000-000000000003', '10000000-0000-0000-0000-000000000003'),
+                ('30000000-0000-0000-0000-000000000004', '10000000-0000-0000-0000-000000000004'),
+                ('30000000-0000-0000-0000-000000000005', '10000000-0000-0000-0000-000000000005')
+                ON CONFLICT (user_id, role_id) DO NOTHING
+                """);
+    }
+}

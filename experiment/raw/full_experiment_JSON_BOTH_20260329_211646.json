@@ -1,0 +1,255 @@
+{
+  "meta": {
+    "timestampUtc": "2026-03-29T21:16:46.670237+00:00",
+    "baseUrl": "http://localhost:8080",
+    "label": "JSON_BOTH",
+    "iterationsPerCase": 8,
+    "warmupRounds": 2
+  },
+  "health": {
+    "status": 200,
+    "body": {
+      "groups": [
+        "liveness",
+        "readiness"
+      ],
+      "status": "UP"
+    }
+  },
+  "experiment1_benchmark": {
+    "httpStatus": 409,
+    "benchmark": {
+      "timestamp": "2026-03-29T21:16:54.862882Z",
+      "status": 409,
+      "error": "Conflict",
+      "message": "requestId already exists. Use a new UUID for each authorization request.",
+      "path": "/api/v1/benchmark/policy-runtime",
+      "violations": null
+    },
+    "warmupDiscarded": 2,
+    "note": "Server-side benchmark; warmup is advisory only."
+  },
+  "experiment1_client_latency": {
+    "samples": [
+      {
+        "case": "treatment_valid",
+        "ms": 2162.41,
+        "decision": "ALLOW",
+        "runtimeUsed": "JSON",
+        "evidenceId": "efd72c7804e8734314b1be5fcd1fc77e8eb7bb7390ce17068abb521195650f06"
+      },
+      {
+        "case": "cross_department",
+        "ms": 2077.93,
+        "decision": "ALLOW",
+        "runtimeUsed": "JSON",
+        "evidenceId": "d4504fbe9c89942a7a43afccb7f7ee15f9c2db1b62df835a36d137b3c8391b80"
+      },
+      {
+        "case": "research_invalid",
+        "ms": 2063.37,
+        "decision": "DENY",
+        "runtimeUsed": "JSON",
+        "evidenceId": "d61777e87524ee5ae9e9c0a9de6cb232675f95a4eaed77f9063b88be619dd4da"
+      },
+      {
+        "case": "treatment_valid",
+        "ms": 2048.79,
+        "decision": "ALLOW",
+        "runtimeUsed": "JSON",
+        "evidenceId": "b0a77696e18733e633732ab3879526e53bc5730a4bb78f993df46b8e44a3b7fa"
+      },
+      {
+        "case": "cross_department",
+        "ms": 2108.73,
+        "decision": "ALLOW",
+        "runtimeUsed": "JSON",
+        "evidenceId": "03b23e5496a8ab9a90bb26eb4eb494ed38e9c4f37a2786c72d4e0a1a36bc06a9"
+      },
+      {
+        "case": "research_invalid",
+        "ms": 2095.34,
+        "decision": "DENY",
+        "runtimeUsed": "JSON",
+        "evidenceId": "7c6bc5faa2256c5c4412888f64d8cb28a203c84f6b0bc61e60d43f51130ef1f1"
+      },
+      {
+        "case": "treatment_valid",
+        "ms": 2065.08,
+        "decision": "ALLOW",
+        "runtimeUsed": "JSON",
+        "evidenceId": "d1a3adcf110b154bbe28f8e2a74fdbfc6dab6ac6b5af6cdba5e807c262482c94"
+      },
+      {
+        "case": "cross_department",
+        "ms": 2044.99,
+        "decision": "ALLOW",
+        "runtimeUsed": "JSON",
+        "evidenceId": "3f21df41a81316547b0a1329c6ede8e204c2513bbb20a3c1c8c0ad9d47f704ff"
+      },
+      {
+        "case": "research_invalid",
+        "ms": 2042.48,
+        "decision": "DENY",
+        "runtimeUsed": "JSON",
+        "evidenceId": "1154884cb1b937616753b8a9b328247eef0e879421771db185f17c2ff154e129"
+      },
+      {
+        "case": "treatment_valid",
+        "ms": 2052.52,
+        "decision": "ALLOW",
+        "runtimeUsed": "JSON",
+        "evidenceId": "f066054d9d899a76aa837a908e6fc3fbb309b0ae96d7dbbe8908cb431b9e4a6e"
+      },
+      {
+        "case": "cross_department",
+        "ms": 2063.2,
+        "decision": "ALLOW",
+        "runtimeUsed": "JSON",
+        "evidenceId": "bebe9c79f235a6633abe1cebb52c52cd2f8cf62096c1ebf349d946311335c3f0"
+      },
+      {
+        "case": "research_invalid",
+        "ms": 2061.79,
+        "decision": "DENY",
+        "runtimeUsed": "JSON",
+        "evidenceId": "e60a5ae6dfc73b8cf08b2c49d9508f7aab6f0d9756d372c5001f0a7f2074a1e2"
+      },
+      {
+        "case": "treatment_valid",
+        "ms": 2048.52,
+        "decision": "ALLOW",
+        "runtimeUsed": "JSON",
+        "evidenceId": "34fe8543d8a21f08eec2073e1a01097accd6f5649cb0f3e6fa41e620437052f7"
+      },
+      {
+        "case": "cross_department",
+        "ms": 2125.88,
+        "decision": "ALLOW",
+        "runtimeUsed": "JSON",
+        "evidenceId": "6e996629113e739f5d052860ac75b099554320b79ae93731e8372273f8d42a65"
+      },
+      {
+        "case": "research_invalid",
+        "ms": 2082.62,
+        "decision": "DENY",
+        "runtimeUsed": "JSON",
+        "evidenceId": "5b4819567025c7f658b680458016afee22a3257fabf3d745bca126cf236f51da"
+      },
+      {
+        "case": "treatment_valid",
+        "ms": 2082.35,
+        "decision": "ALLOW",
+        "runtimeUsed": "JSON",
+        "evidenceId": "4aee1e0fb8e19ad88f7b67f7e84c477a7f287cb2e18d4952f6d7289d41598771"
+      },
+      {
+        "case": "cross_department",
+        "ms": 2078.22,
+        "decision": "ALLOW",
+        "runtimeUsed": "JSON",
+        "evidenceId": "7c813bcf8aeccd5445b39459ee65777cb44c63c03f842c6d955743045419a348"
+      },
+      {
+        "case": "research_invalid",
+        "ms": 2353.16,
+        "decision": "DENY",
+        "runtimeUsed": "JSON",
+        "evidenceId": "f82d42dc1b2b47390767cf98e9aeb8a4570292367c99f0543eb03baf3a622020"
+      },
+      {
+        "case": "treatment_valid",
+        "ms": 2067.1,
+        "decision": "ALLOW",
+        "runtimeUsed": "JSON",
+        "evidenceId": "306a24c4687f167c8782a84df4fc665e8ee4514f22764a753f91c976e9f07bd3"
+      },
+      {
+        "case": "cross_department",
+        "ms": 2040.88,
+        "decision": "ALLOW",
+        "runtimeUsed": "JSON",
+        "evidenceId": "1a4f98a6ed18b5e0cc23699d0a1e21fb17eb24d4a036e9b7247c361f826a912b"
+      },
+      {
+        "case": "research_invalid",
+        "ms": 2065.55,
+        "decision": "DENY",
+        "runtimeUsed": "JSON",
+        "evidenceId": "990e2c26a2ddb5c7d82dad790ca1ac772d1ae69c03548f24146ccbabef5830d2"
+      },
+      {
+        "case": "treatment_valid",
+        "ms": 2066.37,
+        "decision": "ALLOW",
+        "runtimeUsed": "JSON",
+        "evidenceId": "fc3fa94bfe45ca9273ebe68288087381e386b543b45f40729036861e25eeba16"
+      },
+      {
+        "case": "cross_department",
+        "ms": 2118.32,
+        "decision": "ALLOW",
+        "runtimeUsed": "JSON",
+        "evidenceId": "6b65e8fd66a0eddac79437a998066e5c2a0e893287f8bf242fd420889e72bb43"
+      },
+      {
+        "case": "research_invalid",
+        "ms": 2072.91,
+        "decision": "DENY",
+        "runtimeUsed": "JSON",
+        "evidenceId": "182e03f963b8e89d62eac569f354c65b9a83de77c9500dfa590ed1dd9a6909e9"
+      }
+    ],
+    "afterWarmupSummary": {
+      "count": 18,
+      "min_ms": 2040.88,
+      "max_ms": 2353.16,
+      "avg_ms": 2085.11,
+      "p95_ms": 2125.88
+    },
+    "warmup_rounds": 2
+  },
+  "experiment4_policy_version": {
+    "call1": {
+      "status": 200,
+      "policyVersion": "e4ffff82ae1896b1a45c16a4d31ec2c1dbb496afdf60877df5d816767b66e4f5",
+      "policyVersionId": 1
+    },
+    "call2": {
+      "status": 200,
+      "policyVersion": "e4ffff82ae1896b1a45c16a4d31ec2c1dbb496afdf60877df5d816767b66e4f5",
+      "policyVersionId": 1
+    }
+  },
+  "experiment5_unauthorized": [
+    {
+      "name": "gdpr_no_consent_read",
+      "httpStatus": 200,
+      "expectedDecision": "DENY",
+      "actualDecision": "ALLOW",
+      "runtimeUsed": "JSON",
+      "reason": "Matched policy rule"
+    }
+  ],
+  "experiment_ingest_verify_current_mode": {
+    "correlationId": "JSON_BOTH-1774819071",
+    "ingestStatus": 200,
+    "ingest": {
+      "correlationId": "JSON_BOTH-1774819071",
+      "eventHash": "14e473f3885b3fe3d756305cbfb6f82b92c4e624a3ed2f32c41ad77e802500d5",
+      "evidenceId": "57fd197583ecd33765bc31a842ae8148f459040a4e8372be42c80e7249356760",
+      "chainNetwork": "hyperledger-fabric",
+      "anchorTimestamp": "2026-03-29T21:17:53.279354Z",
+      "verificationStatus": "ANCHORED"
+    },
+    "verifyStatus": 200,
+    "verify": {
+      "correlationId": "JSON_BOTH-1774819071",
+      "eventHash": "14e473f3885b3fe3d756305cbfb6f82b92c4e624a3ed2f32c41ad77e802500d5",
+      "evidenceId": "57fd197583ecd33765bc31a842ae8148f459040a4e8372be42c80e7249356760",
+      "chainNetwork": "hyperledger-fabric",
+      "anchorTimestamp": "2026-03-29T21:17:53.279354Z",
+      "verificationStatus": "VERIFIED"
+    }
+  }
+}

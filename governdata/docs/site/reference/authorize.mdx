@@ -1,0 +1,92 @@
+---
+title: POST /api/v1/authorize
+description: Evaluate access requests with policy-as-code and return ALLOW or DENY.
+---
+
+# POST `/api/v1/authorize`
+
+Evaluates a single authorization request under active policy runtime (`JSON` or `OPA`).
+
+## Required header
+
+```http
+X-API-Key: <tenant-api-key>
+```
+
+## Request body
+
+```json
+{
+  "requestId": "uuid",
+  "subject": {
+    "userId": "string",
+    "role": "string",
+    "department": "string"
+  },
+  "resource": {
+    "type": "string",
+    "resourceId": "string"
+  },
+  "action": "string",
+  "context": {
+    "purpose": "string",
+    "location": "string",
+    "timestamp": "ISO-8601 instant",
+    "attributes": {
+      "legalBasis": "HIPAA",
+      "consentGranted": true,
+      "region": "US"
+    }
+  }
+}
+```
+
+## Example
+
+```bash
+curl -s -X POST http://localhost:8080/api/v1/authorize \
+  -H "X-API-Key: <tenant-api-key>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "requestId":"f4d5b1ce-b5af-4954-a25a-57fcb44e6a1f",
+    "subject":{"userId":"doctor-1","role":"Doctor","department":"Cardiology"},
+    "resource":{"type":"PatientRecord","resourceId":"patient-123"},
+    "action":"READ",
+    "context":{"purpose":"treatment","timestamp":"2026-03-26T00:00:00.000Z","attributes":{"legalBasis":"HIPAA","consentGranted":true}}
+  }'
+```
+
+Role strings must match your **active policy JSON** (e.g. seeded `default` policy uses `"Doctor"`, not `"DOCTOR"`).
+
+## Success response
+
+```json
+{
+  "decision": "ALLOW",
+  "engine": "POLICY_CODE",
+  "policyVersion": "hash",
+  "policyVersionId": 1,
+  "evidenceId": null,
+  "reason": "Matched policy rule",
+  "runtimeUsed": "JSON",
+  "evaluationTraceId": "uuid"
+}
+```
+
+## Response fields
+
+- `decision`: `ALLOW` or `DENY`
+- `engine`: enforcement engine (currently `POLICY_CODE`)
+- `policyVersion`: active policy hash
+- `policyVersionId`: internal policy version id
+- `evidenceId`: blockchain tx id when evidence anchoring is enabled
+- `reason`: human-readable decision reason
+- `runtimeUsed`: `JSON` or `OPA`
+- `evaluationTraceId`: tracing value for support/debug
+
+## Errors
+
+- `400`: invalid JSON or missing required fields
+- `401`: missing/invalid API key
+- `409`: duplicate `requestId`
+- `500`: unexpected server error

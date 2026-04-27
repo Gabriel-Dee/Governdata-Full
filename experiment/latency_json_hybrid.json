@@ -1,0 +1,7 @@
+{
+  "D_JSON_hybrid_logging": {
+    "min_ms": 16.9,
+    "max_ms": 401.93,
+    "avg_ms": 57.85
+  }
+}

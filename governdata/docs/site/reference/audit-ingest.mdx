@@ -1,0 +1,94 @@
+---
+title: Audit Ingestion and Verification
+description: Ingest external audit events and verify immutable evidence.
+---
+
+# Audit Ingestion and Verification
+
+Runtime endpoints require:
+
+```http
+X-API-Key: <tenant-api-key>
+```
+
+## POST `/api/v1/audit/ingest`
+
+Ingests audit events from external systems and stores/verifies them according to audit storage mode.
+
+### Request body
+
+```json
+{
+  "sourceSystem": "hospital-ehr",
+  "actor": "doctor-1",
+  "targetResource": "patient-123",
+  "action": "READ",
+  "decision": "ALLOW",
+  "timestamp": "2026-03-26T00:00:00Z",
+  "correlationId": "corr-1743000000",
+  "metadata": {
+    "module": "encounters",
+    "channel": "api"
+  }
+}
+```
+
+### Example
+
+```bash
+curl -s -X POST http://localhost:8080/api/v1/audit/ingest \
+  -H "X-API-Key: <tenant-api-key>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "sourceSystem":"hospital-ehr",
+    "actor":"doctor-1",
+    "targetResource":"patient-123",
+    "action":"READ",
+    "decision":"ALLOW",
+    "timestamp":"2026-03-26T00:00:00Z",
+    "correlationId":"corr-1743000000",
+    "metadata":{"module":"encounters"}
+  }'
+```
+
+### Success response
+
+With default **`GOVERNANCE_AUDIT_STORAGE=BOTH`** and **`GOVERNANCE_BLOCKCHAIN_STUB=true`**, you typically get a **`stub-tx-*`** `evidenceId` and **`verificationStatus`** reflects anchoring (e.g. **`ANCHORED`**). With **`DB_ONLY`**, `evidenceId` may be null and status **`DB_ONLY`**.
+
+```json
+{
+  "correlationId": "corr-1743000000",
+  "eventHash": "sha256-hex",
+  "evidenceId": "stub-tx-xxxxxxxx",
+  "chainNetwork": "hyperledger-fabric",
+  "anchorTimestamp": "2026-03-28T12:00:00Z",
+  "verificationStatus": "ANCHORED"
+}
+```
+
+### Errors
+
+- `400`: invalid payload
+- `401`: missing/invalid API key
+- `409`: duplicate `correlationId`
+- `500`: unexpected server error
+
+---
+
+## GET `/api/v1/audit/verify/{correlationId}`
+
+Returns verification result for a previously ingested event.
+
+### Example
+
+```bash
+curl -s http://localhost:8080/api/v1/audit/verify/corr-1743000000 \
+  -H "X-API-Key: <tenant-api-key>"
+```
+
+### Status meanings
+
+- `VERIFIED`: valid record and evidence check passed (including **stub** anchors in dev)
+- `MISMATCH`: evidence exists but verification failed
+- `NOT_FOUND`: unknown `correlationId` for this tenant
+- `NOT_FOUND`: correlation id not found

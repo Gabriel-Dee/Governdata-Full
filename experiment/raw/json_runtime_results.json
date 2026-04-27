@@ -1,0 +1,122 @@
+[
+  {
+    "case": "allow",
+    "ms": 4090.11,
+    "decision": "ALLOW",
+    "runtimeUsed": "JSON",
+    "reason": "Matched policy rule",
+    "evidenceId": "7d0bc1c718574809bb96ff990105c737705b2086a9d9c5ff88a8b1c7e8db15b6"
+  },
+  {
+    "case": "deny_cross_dept",
+    "ms": 2030.52,
+    "decision": "ALLOW",
+    "runtimeUsed": "JSON",
+    "reason": "Matched policy rule",
+    "evidenceId": "1aba8eba5e9604a6e5df50bba0c8ab1f8c2ff1a253fc2dc5e9360d46c9f82e55"
+  },
+  {
+    "case": "deny_research",
+    "ms": 2036.18,
+    "decision": "DENY",
+    "runtimeUsed": "JSON",
+    "reason": "No policy rule matched",
+    "evidenceId": "85aa72b4a69927b90f32b1a260e3d4be151c03133c9339a8656063aa768cab5d"
+  },
+  {
+    "case": "allow",
+    "ms": 2043.33,
+    "decision": "ALLOW",
+    "runtimeUsed": "JSON",
+    "reason": "Matched policy rule",
+    "evidenceId": "93682776aedd5ac82658b318a95cb845f7b42c1c27c2e633b2fe8a76248319ba"
+  },
+  {
+    "case": "deny_cross_dept",
+    "ms": 2049.39,
+    "decision": "ALLOW",
+    "runtimeUsed": "JSON",
+    "reason": "Matched policy rule",
+    "evidenceId": "415055800d749fb6b96b0e8854cc5ee292ecc16cc1a6ad012aed477e7c0f1111"
+  },
+  {
+    "case": "deny_research",
+    "ms": 2271.86,
+    "decision": "DENY",
+    "runtimeUsed": "JSON",
+    "reason": "No policy rule matched",
+    "evidenceId": "14a91d44b798d2fa47e092dab24f8adb748ab65b680b59fb2182833889b04b22"
+  },
+  {
+    "case": "allow",
+    "ms": 2101.72,
+    "decision": "ALLOW",
+    "runtimeUsed": "JSON",
+    "reason": "Matched policy rule",
+    "evidenceId": "35b325bd26554a2d166ae9fd3c650867a5cc5a63dc403b39cee63b378f5f2cb4"
+  },
+  {
+    "case": "deny_cross_dept",
+    "ms": 2038.65,
+    "decision": "ALLOW",
+    "runtimeUsed": "JSON",
+    "reason": "Matched policy rule",
+    "evidenceId": "dcc520b22c40d7c5ca54fed0de158d43406fe112643610d5f949b63726514161"
+  },
+  {
+    "case": "deny_research",
+    "ms": 2036.83,
+    "decision": "DENY",
+    "runtimeUsed": "JSON",
+    "reason": "No policy rule matched",
+    "evidenceId": "be3b9ad57b477e91e431bdb69ef601ac275468c61131a7ccb4c47fb7790a86d3"
+  },
+  {
+    "case": "allow",
+    "ms": 2052.89,
+    "decision": "ALLOW",
+    "runtimeUsed": "JSON",
+    "reason": "Matched policy rule",
+    "evidenceId": "2bd347a1475405b414eda9aa6891bf7c5e9a6e2a1f9235699b5f9414c0d8af5f"
+  },
+  {
+    "case": "deny_cross_dept",
+    "ms": 2020.26,
+    "decision": "ALLOW",
+    "runtimeUsed": "JSON",
+    "reason": "Matched policy rule",
+    "evidenceId": "dbf48393773c969f90d1d6ccf87ecebdcbde37f49d9625287e048ec4dbaf41a0"
+  },
+  {
+    "case": "deny_research",
+    "ms": 2026.65,
+    "decision": "DENY",
+    "runtimeUsed": "JSON",
+    "reason": "No policy rule matched",
+    "evidenceId": "c6ee7362d38a5af8d10f2cb6ec4f50e7fbd2accb2168fafda0abfa6e67955a9b"
+  },
+  {
+    "case": "allow",
+    "ms": 2016.09,
+    "decision": "ALLOW",
+    "runtimeUsed": "JSON",
+    "reason": "Matched policy rule",
+    "evidenceId": "12bc321fad77a9267bcc7b5eca2db5ad6b1a63ca900cce56d060bd06b5db63b6"
+  },
+  {
+    "case": "deny_cross_dept",
+    "ms": 2035.56,
+    "decision": "ALLOW",
+    "runtimeUsed": "JSON",
+    "reason": "Matched policy rule",
+    "evidenceId": "451b19cf5269269e762519c4ce6fb61ad690c8df5c95ff8f8bbb07b7160a5037"
+  },
+  {
+    "case": "deny_research",
+    "ms": 2050.37,
+    "decision": "DENY",
+    "runtimeUsed": "JSON",
+    "reason": "No policy rule matched",
+    "evidenceId": "dbe6010f66a56509dd3bdb88730f494449384a68475817218efddeb4c9659d4a"
+  }
+]

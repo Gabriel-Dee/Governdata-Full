@@ -1,0 +1,12 @@
+{
+  "E_OPA_no_audit": {
+    "min_ms": 10.67,
+    "max_ms": 357.23,
+    "avg_ms": 47.44
+  },
+  "F_OPA_db_logging": {
+    "min_ms": 14.32,
+    "max_ms": 25.86,
+    "avg_ms": 16.85
+  }
+}

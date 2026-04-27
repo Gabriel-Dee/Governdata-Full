@@ -1,0 +1,85 @@
+\section{Full Reproducibility Script (All Six Experiments)}
+
+This appendix documents a single-command procedure that reproduces the full six-experiment evaluation pipeline used in this study, including policy runtime comparisons, storage-mode comparisons, latency summaries, unauthorized-access checks, policy-version traceability checks, and tamper-evidence validation.
+
+\subsection{Script Location and Purpose}
+
+\begin{itemize}
+  \item Script: \texttt{experiment/scripts/run\_full\_six\_experiments.sh}
+  \item Purpose: Execute all experiment modes end-to-end and generate timestamped outputs in \texttt{experiment/raw/}.
+  \item The script orchestrates:
+    \begin{enumerate}
+      \item matrix runs across runtime/storage configurations,
+      \item final verification capture,
+      \item consolidated latency summary generation,
+      \item automated tamper journey (\texttt{UPDATE} and \texttt{DELETE} in DB followed by verification checks).
+    \end{enumerate}
+\end{itemize}
+
+\subsection{Preconditions}
+
+Before running the script, the following must be available:
+\begin{itemize}
+  \item PostgreSQL with the \texttt{governdata} schema available.
+  \item Governance service dependencies for real mode.
+  \item OPA reachable at \texttt{localhost:8181} for OPA runs.
+  \item Hyperledger Fabric and governance chaincode running for blockchain/hybrid modes.
+  \item Valid tenant API key (environment variable \texttt{GOVERNANCE\_API\_KEY}).
+  \item Local tools: \texttt{bash}, \texttt{curl}, \texttt{python3}, \texttt{psql}.
+\end{itemize}
+
+\subsection{Execution}
+
+\begin{verbatim}
+chmod +x experiment/scripts/run_full_six_experiments.sh
+./experiment/scripts/run_full_six_experiments.sh
+\end{verbatim}
+
+Optional environment variables:
+\begin{verbatim}
+export GOVERNANCE_API_KEY=<your-key>
+export GOV_BASE_URL=http://localhost:8080
+export GOV_DB_NAME=governdata
+# Optional alternative:
+# export GOV_DB_URL=postgresql://user:pass@localhost:5432/governdata
+\end{verbatim}
+
+\subsection{What the Script Produces}
+
+Each run writes timestamped outputs under \texttt{experiment/raw/}:
+\begin{itemize}
+  \item \texttt{full\_experiment\_<label>\_<timestamp>.json} \\
+  Per-run capture containing benchmark, client latency (min/max/avg/p95), policy-version probe, unauthorized scenario, and ingest/verify checks.
+  \item \texttt{matrix\_summary\_<timestamp>.json} \\
+  Aggregated latency table for the latest matrix labels.
+  \item \texttt{tamper\_journey\_<timestamp>.json} \\
+  Ordered evidence for ingest $\rightarrow$ verify $\rightarrow$ DB update $\rightarrow$ verify $\rightarrow$ DB delete $\rightarrow$ verify.
+\end{itemize}
+
+\subsection{Mapping to the Six Experiments}
+
+\begin{enumerate}
+  \item \textbf{Policy Engine Comparison}: reproduced by JSON vs OPA matrix runs and client-latency summaries.
+  \item \textbf{DB vs Blockchain Integrity}: reproduced by storage-mode runs and verify outcomes.
+  \item \textbf{Hybrid Audit Model}: reproduced in BOTH mode with chain anchoring evidence.
+  \item \textbf{Policy Version Traceability}: reproduced by repeated authorization probe with version metadata capture.
+  \item \textbf{Unauthorized Access Handling}: reproduced by no-consent scenario and expected/actual decision comparison.
+  \item \textbf{Latency Overhead}: reproduced from post-warmup latency summaries and matrix aggregation.
+\end{enumerate}
+
+\subsection{Automated Tamper Sequence}
+
+The script performs the tamper steps automatically:
+\begin{enumerate}
+  \item Ingest external audit event.
+  \item Verify baseline status.
+  \item Execute SQL \texttt{UPDATE} against \texttt{external\_audit\_events}.
+  \item Verify mismatch status.
+  \item Execute SQL \texttt{DELETE} against \texttt{external\_audit\_events}.
+  \item Verify chain-only recovery status (in real chain mode).
+\end{enumerate}
+
+\subsection{Defense-Ready Reproducibility Statement}
+
+\textit{All six experiments are reproducible via one orchestrator script. The procedure generates timestamped raw outputs and summarized metrics, and includes an automated tamper-evidence sequence to demonstrate integrity behavior under adversarial database modification and deletion.}
+

@@ -1,0 +1,141 @@
+---
+title: Getting Started
+description: Quick start for integrating Governance-as-a-Service into an existing backend.
+---
+
+# Getting Started
+
+This platform adds two capabilities to your existing system:
+- policy-as-code authorization (`/api/v1/authorize`)
+- verifiable audit ingestion and verification (`/api/v1/audit/ingest`, `/api/v1/audit/verify/{correlationId}`)
+
+## Prerequisites
+
+- Running Governance API service
+- PostgreSQL configured for Governance service
+- Existing backend (for example Spring Boot) where you already manage RBAC and patient data
+
+See also **[Organization onboarding journey (PDF-style overview)](../../platform-onboarding-journey.md)** in the repo for **tenant → API key → integrate** in plain language.
+
+**Building the developer portal (register / login / API keys / snippets)?** Read **[Frontend developer portal guide](../../frontend-developer-portal-guide.md)** and **[Platform roles & frontend integration](./platform-roles-and-frontend.mdx)**.
+
+## Base URL
+
+Use your deployment URL, for example:
+
+```bash
+http://localhost:8080
+```
+
+## Quick health check
+
+```bash
+curl -s http://localhost:8080/actuator/health
+```
+
+## First authorization call
+
+**Recommended (self-service):** register a tenant + user, create an API key from the portal, then call authorize.
+
+```bash
+# 1) Register (returns JWT + tenant info)
+curl -s -X POST http://localhost:8080/api/v1/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"email":"dev@acme-hospital.org","password":"your-secure-password","organizationDisplayName":"Acme Hospital","tenantKey":"acme-hospital"}'
+
+# 2) Create an API key (use accessToken from step 1)
+curl -s -X POST http://localhost:8080/api/v1/portal/api-keys \
+  -H "Authorization: Bearer <accessToken>" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"ehr-prod"}'
+
+# 3) Call runtime APIs with X-API-Key (gdk_… from step 2)
+```
+
+**Optional (operator bootstrap):** provision tenant and key with **`X-Admin-Secret`** — see **`docs/developer-platform-api-guide.md`**.
+
+```bash
+# Legacy: admin + API key, then authorize
+curl -s -X POST http://localhost:8080/api/v1/admin/tenants \
+  -H "X-Admin-Secret: <admin-secret>" \
+  -H "Content-Type: application/json" \
+  -d '{"tenantKey":"acme-hospital","displayName":"Acme Hospital","primaryContactEmail":"it@acme-hospital.org","primaryContactName":"Jordan Lee","primaryContactTitle":"Director of IT Security"}'
+
+curl -s -X POST http://localhost:8080/api/v1/admin/api-keys \
+  -H "X-Admin-Secret: <admin-secret>" \
+  -H "Content-Type: application/json" \
+  -d '{"tenantId":2,"name":"ehr-prod"}'
+
+# Then call runtime APIs with X-API-Key
+curl -s -X POST http://localhost:8080/api/v1/authorize \
+  -H "X-API-Key: <tenant-api-key>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "requestId":"5a1e312f-b1c8-4af8-a6e8-a67bc4a53884",
+    "subject":{"userId":"doctor-1","role":"Doctor","department":"Cardiology"},
+    "resource":{"type":"PatientRecord","resourceId":"patient-123"},
+    "action":"READ",
+    "context":{
+      "purpose":"treatment",
+      "timestamp":"2026-03-26T00:00:00.000Z",
+      "attributes":{"legalBasis":"HIPAA","consentGranted":true,"region":"US"}
+    }
+  }'
+```
+
+## First audit ingestion call
+
+```bash
+curl -s -X POST http://localhost:8080/api/v1/audit/ingest \
+  -H "X-API-Key: <tenant-api-key>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "sourceSystem":"hospital-ehr",
+    "actor":"doctor-1",
+    "targetResource":"patient-123",
+    "action":"READ",
+    "decision":"ALLOW",
+    "timestamp":"2026-03-26T00:00:00Z",
+    "correlationId":"corr-1743000000",
+    "metadata":{"module":"encounters"}
+  }'
+```
+
+## Environment variables
+
+```bash
+DB_USERNAME=
+DB_PASSWORD=
+GOVERNANCE_POLICY_RUNTIME=JSON
+GOVERNANCE_AUDIT_STORAGE=BOTH
+GOVERNANCE_BLOCKCHAIN_STUB=true
+GOVERNANCE_AUTH_API_KEY_ENABLED=true
+GOVERNANCE_ADMIN_SECRET=change-me-admin-secret
+GOVERNANCE_API_KEY=
+OPA_URL=
+OPA_FAIL_OPEN=false
+BLOCKCHAIN_NETWORK=hyperledger-fabric
+```
+
+## Compliance catalog (optional)
+
+HIPAA/GDPR **rule catalog** + evidence scoring (separate from a single `/authorize` call):
+
+```bash
+curl -s "http://localhost:8080/api/v1/compliance/catalog?framework=ALL" \
+  -H "X-API-Key: <tenant-api-key>"
+
+curl -s -X POST http://localhost:8080/api/v1/compliance/evaluate \
+  -H "X-API-Key: <tenant-api-key>" \
+  -H "Content-Type: application/json" \
+  -d '{"frameworks":["HIPAA","GDPR"],"evidence":{"hipaa_audit_controls":true}}'
+```
+
+## Next pages
+
+- `/platform-roles-and-frontend`
+- `/integration/spring-boot`
+- `/reference/authorize`
+- `/reference/audit-ingest`
+- `/reference/errors`
+- `/architecture/deployment-models`

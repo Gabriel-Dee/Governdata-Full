@@ -1,0 +1,80 @@
+spring:
+  application:
+    name: governdata
+  datasource:
+    url: jdbc:postgresql://localhost:5432/governdata
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        default_schema: public
+        format_sql: true
+    open-in-view: false
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    # Flyway 11 checksums differ from older Flyway; existing dev DBs fail validation otherwise.
+    # Run once: ./mvnw flyway:repair (see pom) then set back to true for stricter CI if desired.
+    validate-on-migrate: ${FLYWAY_VALIDATE_ON_MIGRATE:false}
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when-authorized
+
+governance:
+  # Comma-separated. Dev portal (e.g. Next.js) on 3000 needs this for browser fetch.
+  cors:
+    allowed-origins: ${GOVERNANCE_CORS_ALLOWED_ORIGINS:http://localhost:3000,http://127.0.0.1:3000}
+  auth:
+    api-key:
+      enabled: ${GOVERNANCE_AUTH_API_KEY_ENABLED:true}
+    admin-secret: ${GOVERNANCE_ADMIN_SECRET:change-me-admin-secret}
+  portal:
+    # Human login (developer portal). Use a long random secret in production.
+    jwt:
+      secret: ${GOVERNANCE_JWT_SECRET:change-me-dev-jwt-secret-32chars-min!!}
+      expiration-seconds: ${GOVERNANCE_JWT_EXPIRATION_SECONDS:86400}
+    # Shown in dashboard code snippets (curl base URL).
+    public-base-url: ${GOVERNANCE_PUBLIC_BASE_URL:http://localhost:8080}
+  default-engine: POLICY_CODE
+  default-policy: default
+  policy-scope: ${GOVERNANCE_POLICY_SCOPE:GLOBAL}
+  policy:
+    runtime: ${GOVERNANCE_POLICY_RUNTIME:JSON}
+    opa:
+      url: ${OPA_URL:http://localhost:8181/v1/data/healthcare/authz}
+      fail-open: ${OPA_FAIL_OPEN:false}
+  audit:
+    # BOTH = index row in Postgres + anchor on Fabric (recommended: verify works, you still see evidenceId).
+    # DB_ONLY = no chain. BLOCKCHAIN_ONLY = chain only (same metadata row persisted for verify/lookup).
+    storage: ${GOVERNANCE_AUDIT_STORAGE:BOTH}
+  blockchain:
+    # true = no Fabric network required; generates stub-tx-* ids (local dev). false = set fabric.* and connect to a real network.
+    stub: ${GOVERNANCE_BLOCKCHAIN_STUB:true}
+    network: ${BLOCKCHAIN_NETWORK:hyperledger-fabric}
+    fabric:
+      connection-profile-path: ${FABRIC_CONNECTION_PROFILE:}
+      channel-name: ${FABRIC_CHANNEL_NAME:mychannel}
+      chaincode-name: ${FABRIC_CHAINCODE_NAME:governance}
+      wallet-path: ${FABRIC_WALLET_PATH:}
+      identity-label: ${FABRIC_IDENTITY_LABEL:}
+      commit-timeout-seconds: 30
+
+logging:
+  level:
+    com.governdata: INFO
+    org.springframework.security: INFO
+    org.flywaydb: INFO

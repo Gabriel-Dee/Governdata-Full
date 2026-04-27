@@ -1,0 +1,257 @@
+{
+  "meta": {
+    "timestampUtc": "2026-03-29T21:22:49.086922+00:00",
+    "baseUrl": "http://localhost:8080",
+    "label": "FINAL_VERIFY",
+    "iterationsPerCase": 8,
+    "warmupRounds": 2
+  },
+  "health": {
+    "status": 200,
+    "body": {
+      "groups": [
+        "liveness",
+        "readiness"
+      ],
+      "status": "UP"
+    }
+  },
+  "experiment1_benchmark": {
+    "httpStatus": 200,
+    "benchmark": {
+      "runtime": "OPA",
+      "iterations": 1,
+      "totalRequests": 3,
+      "totalEvaluations": 3,
+      "allowCount": 1,
+      "denyCount": 2,
+      "averageLatencyMs": 2142.0,
+      "p95LatencyMs": 2237
+    },
+    "warmupDiscarded": 0,
+    "note": "Server-side benchmark; warmup is advisory only."
+  },
+  "experiment1_client_latency": {
+    "samples": [
+      {
+        "case": "treatment_valid",
+        "ms": 2102.11,
+        "decision": "ALLOW",
+        "runtimeUsed": "OPA",
+        "evidenceId": "3ba88099e2232debac1424d6ddaf622ee99a622da7eb1cf0147b6ef88e3dfc78"
+      },
+      {
+        "case": "cross_department",
+        "ms": 2058.87,
+        "decision": "DENY",
+        "runtimeUsed": "OPA",
+        "evidenceId": "e0474c543c68b85e7aef055c59afd0272d7c069451137c70c5bb5cfae2bc0f68"
+      },
+      {
+        "case": "research_invalid",
+        "ms": 2055.39,
+        "decision": "DENY",
+        "runtimeUsed": "OPA",
+        "evidenceId": "8ba87298f031052e15c3434cbe37288201ff87f368c2afba2ce25db5b1ef643a"
+      },
+      {
+        "case": "treatment_valid",
+        "ms": 2054.44,
+        "decision": "ALLOW",
+        "runtimeUsed": "OPA",
+        "evidenceId": "7797e726d553635adc85db85b996f5624b5d8ce19f338933548a821771b2209c"
+      },
+      {
+        "case": "cross_department",
+        "ms": 2054.4,
+        "decision": "DENY",
+        "runtimeUsed": "OPA",
+        "evidenceId": "d2c83de520298d02eddc62cdba14c17a5a5f897f84d7ae5fb4f3a6bdd5ca2a35"
+      },
+      {
+        "case": "research_invalid",
+        "ms": 2060.63,
+        "decision": "DENY",
+        "runtimeUsed": "OPA",
+        "evidenceId": "6547d584deadba22e2113914fa62da5a4f2121df0d31e433490258f98eb37890"
+      },
+      {
+        "case": "treatment_valid",
+        "ms": 2056.21,
+        "decision": "ALLOW",
+        "runtimeUsed": "OPA",
+        "evidenceId": "b581f9792dd0787248f4865c5e8e40e2cde57a6d3a12913d827dab008268e51c"
+      },
+      {
+        "case": "cross_department",
+        "ms": 2058.16,
+        "decision": "DENY",
+        "runtimeUsed": "OPA",
+        "evidenceId": "3088926faf0655dca5926fce631aaa894ad881cac8c2a92c986925c8b80a81b2"
+      },
+      {
+        "case": "research_invalid",
+        "ms": 2109.26,
+        "decision": "DENY",
+        "runtimeUsed": "OPA",
+        "evidenceId": "c2fcdcc9b75617866a7a0d12d328f55c846882f647954589441e9b6afd9e2b39"
+      },
+      {
+        "case": "treatment_valid",
+        "ms": 2079.84,
+        "decision": "ALLOW",
+        "runtimeUsed": "OPA",
+        "evidenceId": "c5c09e0fad7f9a44fa94bbc219aa0e8437a656ea4db7e6edb4733f4e79d01915"
+      },
+      {
+        "case": "cross_department",
+        "ms": 2044.58,
+        "decision": "DENY",
+        "runtimeUsed": "OPA",
+        "evidenceId": "b38338563eb83656d4719cb07a95fa9e88584006a169020ac3a2cb858d1657d5"
+      },
+      {
+        "case": "research_invalid",
+        "ms": 2060.77,
+        "decision": "DENY",
+        "runtimeUsed": "OPA",
+        "evidenceId": "5300e62497180b8c6fefa718980aaf729c3c57c6eb31575ad751e38e041eff25"
+      },
+      {
+        "case": "treatment_valid",
+        "ms": 2051.48,
+        "decision": "ALLOW",
+        "runtimeUsed": "OPA",
+        "evidenceId": "21af6ca44397c4e9b2e4fa26d388b1c990cf925904585061a1636d32e966ac79"
+      },
+      {
+        "case": "cross_department",
+        "ms": 2047.37,
+        "decision": "DENY",
+        "runtimeUsed": "OPA",
+        "evidenceId": "051e494de4808d21c70f9a6e83bc882ae42ed520837d03a76f89c421d0ad0823"
+      },
+      {
+        "case": "research_invalid",
+        "ms": 2058.19,
+        "decision": "DENY",
+        "runtimeUsed": "OPA",
+        "evidenceId": "c0a2e13254675546e6063efd61bb34ce59b4cfe060c8817f90de8ad7eaec1850"
+      },
+      {
+        "case": "treatment_valid",
+        "ms": 2096.75,
+        "decision": "ALLOW",
+        "runtimeUsed": "OPA",
+        "evidenceId": "3d9b1268fe635d501d5f8a0a80b31beca2ef35dfb88290e38c6465f4630a3cfb"
+      },
+      {
+        "case": "cross_department",
+        "ms": 2088.56,
+        "decision": "DENY",
+        "runtimeUsed": "OPA",
+        "evidenceId": "7d6aa397fd7a75567ee3f6642c8aae1ffa9a809cb30edd0807187daa00542a64"
+      },
+      {
+        "case": "research_invalid",
+        "ms": 2041.58,
+        "decision": "DENY",
+        "runtimeUsed": "OPA",
+        "evidenceId": "b9ec3f5fadbc4af18a3d493548b1a37544e0b44e44cc86a703f4535272358b63"
+      },
+      {
+        "case": "treatment_valid",
+        "ms": 2054.15,
+        "decision": "ALLOW",
+        "runtimeUsed": "OPA",
+        "evidenceId": "408d214a9fb381dfca0a9fcc39dd3a55a045ae8f17a6612af4857c50e59db195"
+      },
+      {
+        "case": "cross_department",
+        "ms": 2051.5,
+        "decision": "DENY",
+        "runtimeUsed": "OPA",
+        "evidenceId": "26c71b9ef7be6958ec1cab72c87eb558d955ed68232dd4c924c44ac340314a79"
+      },
+      {
+        "case": "research_invalid",
+        "ms": 2056.17,
+        "decision": "DENY",
+        "runtimeUsed": "OPA",
+        "evidenceId": "48fa7d4bc793fa829f3bcfe49a759ec9f4949b788f562ee8753f4d9f87ad3deb"
+      },
+      {
+        "case": "treatment_valid",
+        "ms": 2048.16,
+        "decision": "ALLOW",
+        "runtimeUsed": "OPA",
+        "evidenceId": "89f938665cd587f6141a5e53bb47ae73a850340841d408884c8cab5249807295"
+      },
+      {
+        "case": "cross_department",
+        "ms": 2080.88,
+        "decision": "DENY",
+        "runtimeUsed": "OPA",
+        "evidenceId": "b768952e12e69c2397ca7307a7542e2d80449f924a62aca8f79b66bdff7cf791"
+      },
+      {
+        "case": "research_invalid",
+        "ms": 2120.21,
+        "decision": "DENY",
+        "runtimeUsed": "OPA",
+        "evidenceId": "f3008e334640231b4acc1e9c328f2c9615653d2dc94d49e013aae3244dc6308a"
+      }
+    ],
+    "afterWarmupSummary": {
+      "count": 18,
+      "min_ms": 2041.58,
+      "max_ms": 2120.21,
+      "avg_ms": 2066.88,
+      "p95_ms": 2109.26
+    },
+    "warmup_rounds": 2
+  },
+  "experiment4_policy_version": {
+    "call1": {
+      "status": 200,
+      "policyVersion": "e4ffff82ae1896b1a45c16a4d31ec2c1dbb496afdf60877df5d816767b66e4f5",
+      "policyVersionId": 1
+    },
+    "call2": {
+      "status": 200,
+      "policyVersion": "e4ffff82ae1896b1a45c16a4d31ec2c1dbb496afdf60877df5d816767b66e4f5",
+      "policyVersionId": 1
+    }
+  },
+  "experiment5_unauthorized": [
+    {
+      "name": "gdpr_no_consent_read",
+      "httpStatus": 200,
+      "expectedDecision": "DENY",
+      "actualDecision": "DENY",
+      "runtimeUsed": "OPA",
+      "reason": "denied: no matching policy rule"
+    }
+  ],
+  "experiment_ingest_verify_current_mode": {
+    "correlationId": "FINAL_VERIFY-1774819431",
+    "ingestStatus": 200,
+    "ingest": {
+      "correlationId": "FINAL_VERIFY-1774819431",
+      "eventHash": "6c1f8380d2dcaf9690051d30c7ba2e975928025ebd615bb15fff45a3c6b7b45e",
+      "evidenceId": "4b9bfd77083717cf580623718778497cc098d452952b06efd044846b393e525f",
+      "chainNetwork": "hyperledger-fabric",
+      "anchorTimestamp": "2026-03-29T21:23:53.477235Z",
+      "verificationStatus": "ANCHORED"
+    },
+    "verifyStatus": 200,
+    "verify": {
+      "correlationId": "FINAL_VERIFY-1774819431",
+      "eventHash": "6c1f8380d2dcaf9690051d30c7ba2e975928025ebd615bb15fff45a3c6b7b45e",
+      "evidenceId": "4b9bfd77083717cf580623718778497cc098d452952b06efd044846b393e525f",
+      "chainNetwork": "hyperledger-fabric",
+      "anchorTimestamp": "2026-03-29T21:23:53.477235Z",
+      "verificationStatus": "VERIFIED"
+    }
+  }
+}

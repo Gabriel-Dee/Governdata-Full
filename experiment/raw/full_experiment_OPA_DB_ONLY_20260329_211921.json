@@ -1,0 +1,255 @@
+{
+  "meta": {
+    "timestampUtc": "2026-03-29T21:19:21.107401+00:00",
+    "baseUrl": "http://localhost:8080",
+    "label": "OPA_DB_ONLY",
+    "iterationsPerCase": 8,
+    "warmupRounds": 2
+  },
+  "health": {
+    "status": 200,
+    "body": {
+      "groups": [
+        "liveness",
+        "readiness"
+      ],
+      "status": "UP"
+    }
+  },
+  "experiment1_benchmark": {
+    "httpStatus": 409,
+    "benchmark": {
+      "timestamp": "2026-03-29T21:19:21.408882Z",
+      "status": 409,
+      "error": "Conflict",
+      "message": "requestId already exists. Use a new UUID for each authorization request.",
+      "path": "/api/v1/benchmark/policy-runtime",
+      "violations": null
+    },
+    "warmupDiscarded": 2,
+    "note": "Server-side benchmark; warmup is advisory only."
+  },
+  "experiment1_client_latency": {
+    "samples": [
+      {
+        "case": "treatment_valid",
+        "ms": 19.78,
+        "decision": "ALLOW",
+        "runtimeUsed": "OPA",
+        "evidenceId": null
+      },
+      {
+        "case": "cross_department",
+        "ms": 16.91,
+        "decision": "DENY",
+        "runtimeUsed": "OPA",
+        "evidenceId": null
+      },
+      {
+        "case": "research_invalid",
+        "ms": 18.56,
+        "decision": "DENY",
+        "runtimeUsed": "OPA",
+        "evidenceId": null
+      },
+      {
+        "case": "treatment_valid",
+        "ms": 18.33,
+        "decision": "ALLOW",
+        "runtimeUsed": "OPA",
+        "evidenceId": null
+      },
+      {
+        "case": "cross_department",
+        "ms": 20.12,
+        "decision": "DENY",
+        "runtimeUsed": "OPA",
+        "evidenceId": null
+      },
+      {
+        "case": "research_invalid",
+        "ms": 20.76,
+        "decision": "DENY",
+        "runtimeUsed": "OPA",
+        "evidenceId": null
+      },
+      {
+        "case": "treatment_valid",
+        "ms": 16.8,
+        "decision": "ALLOW",
+        "runtimeUsed": "OPA",
+        "evidenceId": null
+      },
+      {
+        "case": "cross_department",
+        "ms": 19.94,
+        "decision": "DENY",
+        "runtimeUsed": "OPA",
+        "evidenceId": null
+      },
+      {
+        "case": "research_invalid",
+        "ms": 17.64,
+        "decision": "DENY",
+        "runtimeUsed": "OPA",
+        "evidenceId": null
+      },
+      {
+        "case": "treatment_valid",
+        "ms": 18.01,
+        "decision": "ALLOW",
+        "runtimeUsed": "OPA",
+        "evidenceId": null
+      },
+      {
+        "case": "cross_department",
+        "ms": 14.12,
+        "decision": "DENY",
+        "runtimeUsed": "OPA",
+        "evidenceId": null
+      },
+      {
+        "case": "research_invalid",
+        "ms": 18.4,
+        "decision": "DENY",
+        "runtimeUsed": "OPA",
+        "evidenceId": null
+      },
+      {
+        "case": "treatment_valid",
+        "ms": 29.16,
+        "decision": "ALLOW",
+        "runtimeUsed": "OPA",
+        "evidenceId": null
+      },
+      {
+        "case": "cross_department",
+        "ms": 36.44,
+        "decision": "DENY",
+        "runtimeUsed": "OPA",
+        "evidenceId": null
+      },
+      {
+        "case": "research_invalid",
+        "ms": 28.11,
+        "decision": "DENY",
+        "runtimeUsed": "OPA",
+        "evidenceId": null
+      },
+      {
+        "case": "treatment_valid",
+        "ms": 20.48,
+        "decision": "ALLOW",
+        "runtimeUsed": "OPA",
+        "evidenceId": null
+      },
+      {
+        "case": "cross_department",
+        "ms": 19.71,
+        "decision": "DENY",
+        "runtimeUsed": "OPA",
+        "evidenceId": null
+      },
+      {
+        "case": "research_invalid",
+        "ms": 19.72,
+        "decision": "DENY",
+        "runtimeUsed": "OPA",
+        "evidenceId": null
+      },
+      {
+        "case": "treatment_valid",
+        "ms": 27.51,
+        "decision": "ALLOW",
+        "runtimeUsed": "OPA",
+        "evidenceId": null
+      },
+      {
+        "case": "cross_department",
+        "ms": 14.31,
+        "decision": "DENY",
+        "runtimeUsed": "OPA",
+        "evidenceId": null
+      },
+      {
+        "case": "research_invalid",
+        "ms": 13.65,
+        "decision": "DENY",
+        "runtimeUsed": "OPA",
+        "evidenceId": null
+      },
+      {
+        "case": "treatment_valid",
+        "ms": 11.57,
+        "decision": "ALLOW",
+        "runtimeUsed": "OPA",
+        "evidenceId": null
+      },
+      {
+        "case": "cross_department",
+        "ms": 14.37,
+        "decision": "DENY",
+        "runtimeUsed": "OPA",
+        "evidenceId": null
+      },
+      {
+        "case": "research_invalid",
+        "ms": 15.25,
+        "decision": "DENY",
+        "runtimeUsed": "OPA",
+        "evidenceId": null
+      }
+    ],
+    "afterWarmupSummary": {
+      "count": 18,
+      "min_ms": 11.57,
+      "max_ms": 36.44,
+      "avg_ms": 19.73,
+      "p95_ms": 29.16
+    },
+    "warmup_rounds": 2
+  },
+  "experiment4_policy_version": {
+    "call1": {
+      "status": 200,
+      "policyVersion": "e4ffff82ae1896b1a45c16a4d31ec2c1dbb496afdf60877df5d816767b66e4f5",
+      "policyVersionId": 1
+    },
+    "call2": {
+      "status": 200,
+      "policyVersion": "e4ffff82ae1896b1a45c16a4d31ec2c1dbb496afdf60877df5d816767b66e4f5",
+      "policyVersionId": 1
+    }
+  },
+  "experiment5_unauthorized": [
+    {
+      "name": "gdpr_no_consent_read",
+      "httpStatus": 200,
+      "expectedDecision": "DENY",
+      "actualDecision": "DENY",
+      "runtimeUsed": "OPA",
+      "reason": "denied: no matching policy rule"
+    }
+  ],
+  "experiment_ingest_verify_current_mode": {
+    "correlationId": "OPA_DB_ONLY-1774819161",
+    "ingestStatus": 200,
+    "ingest": {
+      "correlationId": "OPA_DB_ONLY-1774819161",
+      "eventHash": "b0922c54b9862e02aac06d4041ceea9390a74f7b7c6a193ef4dd6592569891cd",
+      "evidenceId": null,
+      "chainNetwork": null,
+      "anchorTimestamp": null,
+      "verificationStatus": "DB_ONLY"
+    },
+    "verifyStatus": 200,
+    "verify": {
+      "correlationId": "OPA_DB_ONLY-1774819161",
+      "eventHash": "b0922c54b9862e02aac06d4041ceea9390a74f7b7c6a193ef4dd6592569891cd",
+      "evidenceId": null,
+      "chainNetwork": null,
+      "anchorTimestamp": null,
+      "verificationStatus": "VERIFIED"
+    }
+  }
+}

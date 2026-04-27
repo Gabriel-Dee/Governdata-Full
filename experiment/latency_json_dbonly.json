@@ -1,0 +1,12 @@
+{
+  "A_JSON_no_audit": {
+    "min_ms": 10.44,
+    "max_ms": 359.1,
+    "avg_ms": 46.91
+  },
+  "B_JSON_db_logging": {
+    "min_ms": 14.24,
+    "max_ms": 26.54,
+    "avg_ms": 16.41
+  }
+}

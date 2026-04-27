@@ -1,0 +1,22 @@
+{
+  "opa_avg_ms": 2234.44,
+  "json_avg_ms": 2193.36,
+  "opa_min_ms": 2045.94,
+  "opa_max_ms": 4495.93,
+  "json_min_ms": 2016.09,
+  "json_max_ms": 4090.11,
+  "opa_runtime_used": [
+    "OPA"
+  ],
+  "json_runtime_used": [
+    "JSON"
+  ],
+  "opa_decisions": {
+    "ALLOW": 5,
+    "DENY": 10
+  },
+  "json_decisions": {
+    "ALLOW": 10,
+    "DENY": 5
+  }
+}

@@ -1,0 +1,50 @@
+---
+title: Deployment Models
+description: SaaS, on-prem, and hybrid deployment models for governance and private blockchain.
+---
+
+# Deployment Models
+
+Choose deployment based on compliance, operations, and network controls.
+
+## Model A: Customer-hosted / on-prem
+
+Best for healthcare organizations with strict data residency and internal compliance controls.
+
+- Governance service runs in hospital VPC/data center.
+- Patient DB and RBAC remain in existing systems.
+- Private blockchain also runs on customer premises.
+- No mandatory provider-side tenant account required.
+
+## Model B: Managed SaaS
+
+Best for teams optimizing for speed and centralized operations.
+
+- Governance service hosted by platform provider.
+- Customer apps call provider endpoints over secure channels.
+- Typically requires tenant accounts and API credentials.
+- Provider handles patching, upgrades, and monitoring.
+
+## Model C: Hybrid
+
+Balanced model when policy centralization is desired but ledger must stay local.
+
+- Policy decision service managed centrally.
+- Audit anchoring connector deployed on customer side.
+- Events are anchored to customer private blockchain.
+
+## Recommended default for your use case
+
+For existing hospital systems with private blockchain requirements:
+- adopt **Model A (on-prem)** first
+- keep RBAC local
+- add policy-as-code callouts to Governance API
+- anchor audit evidence to customer private chain
+
+## Authentication strategy by model
+
+- On-prem: internal JWT/mTLS/API key managed by customer
+- SaaS: tenant account + scoped API credentials
+- Hybrid: combine centrally issued creds with private network controls
+
+**Governance API specifics:** **Platform operators** use **`X-Admin-Secret`** only on **`/api/v1/admin/*`**. Each **customer organization** uses **`X-API-Key`** for `/authorize`, `/audit/*`, `/compliance/*`, `/metrics`. See **`/platform-roles-and-frontend`** in the docs site for UI/BFF guidance.

@@ -1,0 +1,7 @@
+{
+  "G_OPA_blockchain_logging": {
+    "min_ms": 16.05,
+    "max_ms": 360.82,
+    "avg_ms": 53.3
+  }
+}

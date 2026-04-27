@@ -1,0 +1,128 @@
+{
+  "valid_treatment": {
+    "runs": [
+      {
+        "http": 200,
+        "decision": "DENY",
+        "reason": "OPA evaluation failure: I/O error on POST request for \"http://localhost:8181/v1/data/healthcare/authz\": Connection refused",
+        "runtime": "OPA",
+        "latency_ms": 391.67
+      },
+      {
+        "http": 200,
+        "decision": "DENY",
+        "reason": "OPA evaluation failure: I/O error on POST request for \"http://localhost:8181/v1/data/healthcare/authz\": Connection refused",
+        "runtime": "OPA",
+        "latency_ms": 15.98
+      },
+      {
+        "http": 200,
+        "decision": "DENY",
+        "reason": "OPA evaluation failure: I/O error on POST request for \"http://localhost:8181/v1/data/healthcare/authz\": Connection refused",
+        "runtime": "OPA",
+        "latency_ms": 13.03
+      },
+      {
+        "http": 200,
+        "decision": "DENY",
+        "reason": "OPA evaluation failure: I/O error on POST request for \"http://localhost:8181/v1/data/healthcare/authz\": Connection refused",
+        "runtime": "OPA",
+        "latency_ms": 14.95
+      },
+      {
+        "http": 200,
+        "decision": "DENY",
+        "reason": "OPA evaluation failure: I/O error on POST request for \"http://localhost:8181/v1/data/healthcare/authz\": Connection refused",
+        "runtime": "OPA",
+        "latency_ms": 14.63
+      }
+    ],
+    "min_ms": 13.03,
+    "max_ms": 391.67,
+    "avg_ms": 90.05
+  },
+  "invalid_research": {
+    "runs": [
+      {
+        "http": 200,
+        "decision": "DENY",
+        "reason": "OPA evaluation failure: I/O error on POST request for \"http://localhost:8181/v1/data/healthcare/authz\": Connection refused",
+        "runtime": "OPA",
+        "latency_ms": 13.62
+      },
+      {
+        "http": 200,
+        "decision": "DENY",
+        "reason": "OPA evaluation failure: I/O error on POST request for \"http://localhost:8181/v1/data/healthcare/authz\": Connection refused",
+        "runtime": "OPA",
+        "latency_ms": 13.38
+      },
+      {
+        "http": 200,
+        "decision": "DENY",
+        "reason": "OPA evaluation failure: I/O error on POST request for \"http://localhost:8181/v1/data/healthcare/authz\": Connection refused",
+        "runtime": "OPA",
+        "latency_ms": 12.61
+      },
+      {
+        "http": 200,
+        "decision": "DENY",
+        "reason": "OPA evaluation failure: I/O error on POST request for \"http://localhost:8181/v1/data/healthcare/authz\": Connection refused",
+        "runtime": "OPA",
+        "latency_ms": 10.61
+      },
+      {
+        "http": 200,
+        "decision": "DENY",
+        "reason": "OPA evaluation failure: I/O error on POST request for \"http://localhost:8181/v1/data/healthcare/authz\": Connection refused",
+        "runtime": "OPA",
+        "latency_ms": 11.87
+      }
+    ],
+    "min_ms": 10.61,
+    "max_ms": 13.62,
+    "avg_ms": 12.42
+  },
+  "edge_role_admin": {
+    "runs": [
+      {
+        "http": 200,
+        "decision": "DENY",
+        "reason": "OPA evaluation failure: I/O error on POST request for \"http://localhost:8181/v1/data/healthcare/authz\": Connection refused",
+        "runtime": "OPA",
+        "latency_ms": 11.04
+      },
+      {
+        "http": 200,
+        "decision": "DENY",
+        "reason": "OPA evaluation failure: I/O error on POST request for \"http://localhost:8181/v1/data/healthcare/authz\": Connection refused",
+        "runtime": "OPA",
+        "latency_ms": 10.74
+      },
+      {
+        "http": 200,
+        "decision": "DENY",
+        "reason": "OPA evaluation failure: I/O error on POST request for \"http://localhost:8181/v1/data/healthcare/authz\": Connection refused",
+        "runtime": "OPA",
+        "latency_ms": 11.23
+      },
+      {
+        "http": 200,
+        "decision": "DENY",
+        "reason": "OPA evaluation failure: I/O error on POST request for \"http://localhost:8181/v1/data/healthcare/authz\": Connection refused",
+        "runtime": "OPA",
+        "latency_ms": 10.86
+      },
+      {
+        "http": 200,
+        "decision": "DENY",
+        "reason": "OPA evaluation failure: I/O error on POST request for \"http://localhost:8181/v1/data/healthcare/authz\": Connection refused",
+        "runtime": "OPA",
+        "latency_ms": 9.52
+      }
+    ],
+    "min_ms": 9.52,
+    "max_ms": 11.23,
+    "avg_ms": 10.68
+  }
+}

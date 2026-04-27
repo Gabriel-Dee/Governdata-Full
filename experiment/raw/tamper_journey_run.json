@@ -1,0 +1,26 @@
+{
+  "correlationId": "journey-tamper-1774819292",
+  "steps": [
+    {
+      "step": 1,
+      "action": "POST /api/v1/audit/ingest",
+      "result": "ANCHORED with real evidenceId"
+    },
+    {
+      "step": 2,
+      "action": "GET /api/v1/audit/verify/{correlationId}",
+      "result": "VERIFIED"
+    },
+    {
+      "step": 3,
+      "action": "SQL UPDATE external_audit_events SET actor='tampered' WHERE correlation_id=...",
+      "result": "MISMATCH (hash no longer matches chain)"
+    },
+    {
+      "step": 4,
+      "action": "SQL DELETE FROM external_audit_events WHERE correlation_id=...",
+      "result": "VERIFIED_CHAIN_ONLY (evidence recovered from Fabric)"
+    }
+  ],
+  "notes": "Requires GOVERNANCE_BLOCKCHAIN_STUB=false and working Fabric + chaincode. Governance DB: psql -d governdata"
+}

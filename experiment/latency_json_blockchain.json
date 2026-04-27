@@ -1,0 +1,7 @@
+{
+  "C_JSON_blockchain_logging": {
+    "min_ms": 14.99,
+    "max_ms": 355.38,
+    "avg_ms": 50.99
+  }
+}

@@ -1,0 +1,62 @@
+---
+title: Error Handling
+description: Standard API error contract and status codes.
+---
+
+# Error Handling
+
+All handled errors return a structured JSON contract:
+
+```json
+{
+  "timestamp": "2026-03-26T17:40:00.000Z",
+  "status": 400,
+  "error": "Bad Request",
+  "message": "Validation failed",
+  "path": "/api/v1/authorize",
+  "violations": [
+    {
+      "field": "subject.userId",
+      "message": "subject.userId is required",
+      "rejectedValue": ""
+    }
+  ]
+}
+```
+
+## Common status codes
+
+- `200`: success
+- `400`: malformed JSON or validation errors
+- `401`: missing/invalid `X-API-Key` or invalid admin secret
+- `404`: resource not found
+- `409`: uniqueness conflict (`requestId`, `correlationId`)
+- `500`: unexpected server failure
+
+## Conflict examples
+
+### Duplicate `requestId`
+
+```json
+{
+  "status": 409,
+  "error": "Conflict",
+  "message": "requestId already exists. Use a new UUID for each authorization request."
+}
+```
+
+### Duplicate `correlationId`
+
+```json
+{
+  "status": 409,
+  "error": "Conflict",
+  "message": "correlationId already exists. Use a unique correlationId for each ingested event."
+}
+```
+
+## Client-side recommendations
+
+- always generate fresh UUIDs for request/event ids
+- treat `409` as expected for replay collisions
+- log `evaluationTraceId` when present for fast triage
