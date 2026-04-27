@@ -1,6 +1,6 @@
-# GovernData Research Project (Information Assurance)
+# Automating Healthcare Compliance: A Governance-Layer Approach Using Policy-as-Code and Blockchain-Based Auditability
 
-This repository contains the full implementation and experimentation workspace for a graduate-level Information Assurance research project focused on **health data governance**.
+This repository contains the full implementation and experimentation workspace for the graduate-level Information Assurance research project titled **"Automating Healthcare Compliance: A Governance-Layer Approach Using Policy-as-Code and Blockchain-Based Auditability."**
 
 At a high level, the project demonstrates how access to electronic health records can be controlled and audited using:
 
