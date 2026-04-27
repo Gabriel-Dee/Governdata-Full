@@ -1,0 +1,73 @@
+# -----------------------------
+# Environment and secrets
+# -----------------------------
+.env
+.env.*
+**/.env
+**/.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.crt
+*.csr
+secrets/
+**/secrets/
+
+# Keep reproducibility templates tracked
+!.env.example
+!**/.env.example
+!*.env.example
+!**/*.env.example
+
+# -----------------------------
+# Node / Next.js
+# -----------------------------
+node_modules/
+**/node_modules/
+.next/
+**/.next/
+dist/
+**/dist/
+build/
+**/build/
+
+# -----------------------------
+# Java / Maven / Spring
+# -----------------------------
+target/
+**/target/
+.mvn/wrapper/maven-wrapper.jar
+
+# -----------------------------
+# Python
+# -----------------------------
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+
+# -----------------------------
+# IDE / OS
+# -----------------------------
+.idea/
+**/.idea/
+.vscode/
+**/.vscode/
+.cursor/
+**/.cursor/
+.DS_Store
+**/.DS_Store
+
+# -----------------------------
+# Logs and temporary files
+# -----------------------------
+*.log
+logs/
+tmp/
+temp/
